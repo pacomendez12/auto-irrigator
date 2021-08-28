@@ -30,41 +30,23 @@ export default function NewTaskModal(props: {
     actionSheetRef.current.setModalVisible(props?.showModal);
   }, [props?.showModal]);
 
+  const onAccept = () => {
+    props?.onHide();
+  };
+
   return (
     <ActionSheet
       ref={actionSheetRef}
       gestureEnabled
       bounceOnOpen
       CustomHeaderComponent={
-        <Header onAccept={() => {}} onCancel={props?.onHide} />
+        <Header onAccept={onAccept} onCancel={props?.onHide} />
       }
       onClose={props?.onHide}
     >
-      <View
-        style={{
-          justifyContent: "center",
-          alignItems: "center",
-          marginVertical: 20,
-        }}
-      >
-        <Text
-          style={{
-            fontSize: 12,
-            textAlign: "center",
-            backgroundColor: "#f5f5f5",
-            color: "#1f1f1f",
-            paddingHorizontal: 10,
-            paddingVertical: 2,
-            borderRadius: 10,
-          }}
-        >
-          Tipo de tarea
-        </Text>
-        <View
-          style={{
-            alignSelf: "stretch",
-          }}
-        >
+      <View style={styles.container}>
+        <Text style={styles.label}>Tipo de tarea</Text>
+        <View style={styles.switchSelectorContainer}>
           <SwitchSelector
             options={options}
             initial={0}
