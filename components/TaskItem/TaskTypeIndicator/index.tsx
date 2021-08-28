@@ -49,5 +49,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     marginHorizontal: 25,
+    backgroundColor: "transparent",
   },
 });

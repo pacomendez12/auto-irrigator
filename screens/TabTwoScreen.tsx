@@ -1,11 +1,14 @@
-import React, { useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import { StyleSheet, FlatList } from "react-native";
 import { FAB } from "react-native-paper";
-import ActionSheet, { ActionSheetProps } from "react-native-actions-sheet";
 import { cloneDeep } from "lodash";
 
 import { Text, View } from "../components/Themed";
 import TaskItem from "../components/TaskItem";
+import Alert from "../components/Alert";
+import EmptyState from "../components/EmptyState";
+import NewTaskModal from "../components/NewTaskModal";
+
 import { Task } from "../types";
 import {
   NONE,
@@ -54,14 +57,34 @@ const mockTasks: Task[] = [
 
 export default function TabTwoScreen() {
   const [tasks, setTasks] = useState(cloneDeep(mockTasks));
+  const currentTask = useRef<Task | null>(null);
+  const [showNewTaskModal, setShowNewTaskModal] = useState(false);
+  const [showDeleteAlert, setShowDeleteAlert] = useState(false);
 
   const toggleEnabled = (task: Task) => {
-    setTasks((tasks) => {
+    setTasks((tasks: [Task]) => {
       return tasks.map((t) => {
         if (t === task) return { ...t, enabled: !t.enabled };
         return t;
       });
     });
+  };
+
+  const onShowDeleteTask = (task: Task) => {
+    currentTask.current = task;
+    setShowDeleteAlert(true);
+  };
+
+  const hideDeleteAlert = () => {
+    currentTask.current = null;
+    setShowDeleteAlert(false);
+  };
+
+  const onDeleteTask = () => {
+    setTasks((tasks: [Task]) =>
+      tasks.filter((task) => task?.id !== currentTask.current?.id)
+    );
+    currentTask.current = null;
   };
 
   const renderItem = ({ item }: { item: Task }) => {
@@ -72,17 +95,25 @@ export default function TabTwoScreen() {
         containerStyle={{
           marginLeft: 25,
         }}
+        onShowDeleteAlert={onShowDeleteTask}
       />
     );
   };
 
-  const actionSheetRef = useRef<ActionSheetProps>();
   return (
     <View style={styles.container}>
       <FlatList
         data={tasks}
         renderItem={renderItem}
         keyExtractor={(item: Task, index: number) => `${item?.id}`}
+        contentContainerStyle={styles.listContentContainer}
+        ListEmptyComponent={
+          <EmptyState
+            title="No hay tareas programadas"
+            message="Para agregar una tarea presiona el botón '+' en la esquina inferior."
+            icon={{ name: "water-off" }}
+          />
+        }
       />
 
       <FAB
@@ -90,20 +121,20 @@ export default function TabTwoScreen() {
         icon="plus"
         uppercase={false}
         onPress={() => {
-          actionSheetRef.current?.setModalVisible();
+          setShowNewTaskModal(true);
         }}
       />
-      <ActionSheet ref={actionSheetRef} gestureEnabled bounceOnOpen>
-        <View
-          style={{
-            height: 160,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <Text>YOUR CUSTOM COMPONENT INSIDE THE ACTIONSHEET</Text>
-        </View>
-      </ActionSheet>
+      <NewTaskModal
+        showModal={showNewTaskModal}
+        onHide={() => setShowNewTaskModal(false)}
+      />
+      <Alert
+        title="Eliminar"
+        message="¿Quieres eliminar esta tarea?"
+        showAlert={showDeleteAlert}
+        onHide={hideDeleteAlert}
+        onDelete={onDeleteTask}
+      />
     </View>
   );
 }
@@ -129,5 +160,8 @@ const styles = StyleSheet.create({
     margin: 16,
     right: 0,
     bottom: 0,
+  },
+  listContentContainer: {
+    flexGrow: 1,
   },
 });
