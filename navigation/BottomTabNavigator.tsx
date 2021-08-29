@@ -5,8 +5,8 @@ import * as React from "react";
 
 import Colors from "../constants/Colors";
 import useColorScheme from "../hooks/useColorScheme";
-import TabOneScreen from "../screens/TabOneScreen";
-import TabTwoScreen from "../screens/TabTwoScreen";
+import TabOneScreen from "../screens/ManualIrrigation";
+import TabTwoScreen from "../screens/AutomaticIrrigation";
 import { BottomTabParamList, TabOneParamList, TabTwoParamList } from "../types";
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
@@ -21,7 +21,7 @@ export default function BottomTabNavigator() {
     >
       <BottomTab.Screen
         name="Manual"
-        component={TabOneNavigator}
+        component={ManualIrrigationNavigator}
         options={{
           tabBarIcon: ({ color }) => (
             <TabBarIcon name="ios-cog" color={color} />
@@ -30,7 +30,7 @@ export default function BottomTabNavigator() {
       />
       <BottomTab.Screen
         name="Automático"
-        component={TabTwoNavigator}
+        component={AutomaticIrrigationNavigator}
         options={{
           tabBarIcon: ({ color }) => (
             <TabBarIcon name="ios-calendar" color={color} />
@@ -49,30 +49,30 @@ function TabBarIcon(props: { name: string; color: string }) {
 
 // Each tab has its own navigation stack, you can read more about this pattern here:
 // https://reactnavigation.org/docs/tab-based-navigation#a-stack-navigator-for-each-tab
-const TabOneStack = createStackNavigator<TabOneParamList>();
+const Manual = createStackNavigator<TabOneParamList>();
 
-function TabOneNavigator() {
+function ManualIrrigationNavigator() {
   return (
-    <TabOneStack.Navigator>
-      <TabOneStack.Screen
+    <Manual.Navigator>
+      <Manual.Screen
         name="TabOneScreen"
         component={TabOneScreen}
         options={{ headerTitle: "Manual" }}
       />
-    </TabOneStack.Navigator>
+    </Manual.Navigator>
   );
 }
 
-const TabTwoStack = createStackNavigator<TabTwoParamList>();
+const Automatic = createStackNavigator<TabTwoParamList>();
 
-function TabTwoNavigator() {
+function AutomaticIrrigationNavigator() {
   return (
-    <TabTwoStack.Navigator>
-      <TabTwoStack.Screen
+    <Automatic.Navigator>
+      <Automatic.Screen
         name="TabTwoScreen"
         component={TabTwoScreen}
         options={{ headerTitle: "Automático" }}
       />
-    </TabTwoStack.Navigator>
+    </Automatic.Navigator>
   );
 }

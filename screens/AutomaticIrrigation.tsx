@@ -61,7 +61,7 @@ export default function TabTwoScreen() {
   const [showNewTaskModal, setShowNewTaskModal] = useState(false);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
 
-  const toggleEnabled = (task: Task) => {
+  const toggleIsEnabled = (task: Task) => {
     setTasks((tasks: [Task]) => {
       return tasks.map((t) => {
         if (t === task) return { ...t, enabled: !t.enabled };
@@ -91,7 +91,7 @@ export default function TabTwoScreen() {
     return (
       <TaskItem
         task={item}
-        toggleEnabled={toggleEnabled}
+        toggleSwitch={toggleIsEnabled}
         containerStyle={{
           marginLeft: 25,
         }}

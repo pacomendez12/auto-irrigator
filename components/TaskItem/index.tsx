@@ -11,15 +11,15 @@ import TypeIndicator from "./TaskTypeIndicator";
 import DaysIndicator from "./DaysIndicator";
 import styles from "./styles";
 
-export default function Item({
+export default function TaskItem({
   task,
   containerStyle,
-  toggleEnabled,
+  toggleSwitch,
   onShowDeleteAlert,
 }: {
   task: Task;
   containerStyle: StyleProp<ViewStyle>;
-  toggleEnabled: (task: Task) => void;
+  toggleSwitch: (task: Task) => void;
   onShowDeleteAlert: (task: Task) => void;
 }) {
   return (
@@ -47,7 +47,7 @@ export default function Item({
             trackColor={{ false: "#dfdfdf", true: "#2f95dc77" }}
             thumbColor="#2f95dc"
             onValueChange={() => {
-              toggleEnabled(task);
+              toggleSwitch(task);
             }}
           />
         </View>

@@ -12,7 +12,7 @@ export default StyleSheet.create({
   },
   containerLeft: {
     flex: 1,
-    flexGrow: 7,
+    flexGrow: 10,
     backgroundColor: "transparent",
   },
   hourAndIndicator: {
@@ -22,12 +22,11 @@ export default StyleSheet.create({
   containerRight: {
     flex: 1,
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
-    flexGrow: 4,
-    marginRight: 15,
+    flexGrow: 2,
+    paddingRight: 15,
     minHeight: 60,
-    justifyContent: "center",
+    justifyContent: "flex-end",
     backgroundColor: "transparent",
   },
   hourText: {
