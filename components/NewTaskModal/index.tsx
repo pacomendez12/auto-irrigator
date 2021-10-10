@@ -5,26 +5,28 @@ import SwitchSelector from "react-native-switch-selector";
 import { View, Text } from "../Themed";
 import Header from "./Header";
 
-import styles from "./styles";
+import * as Constants from "../../AppConstants";
 
-const ONE_TIME_EVENT = 0x0;
-const REPEAT_WEEK = 0x1;
-const REPEAT_BIWEEK = 0x2;
-const REPEAT_MONTH = 0x3;
+import styles from "./styles";
+import TaskTypeContent from './TaskTypeContent/index';
+import { Task } from '../../types';
 
 const options = [
-  { label: "Una vez", value: ONE_TIME_EVENT },
-  { label: "Semanal", value: REPEAT_WEEK },
-  { label: "Quincenal", value: REPEAT_BIWEEK },
-  { label: "Mensual", value: REPEAT_MONTH },
+  { label: "Una vez", value: Constants.ONE_TIME_EVENT },
+  { label: "Semanal", value: Constants.REPEAT_WEEK },
+  { label: "Quincenal", value: Constants.REPEAT_BIWEEK },
+  { label: "Mensual", value: Constants.REPEAT_MONTH },
 ];
+
+const WEEK_DAY_OFFSET = 1;
 
 export default function NewTaskModal(props: {
   showModal: boolean;
   onHide: () => void;
 }) {
   const actionSheetRef = useRef<ActionSheetProps>();
-  const [type, setType] = useState<number>(ONE_TIME_EVENT);
+  const [type, setType] = useState<number>(Constants.ONE_TIME_EVENT);
+  const [task, setTask] = useState<Task>(createEmptyTask());
 
   useEffect(() => {
     actionSheetRef.current.setModalVisible(props?.showModal);
@@ -53,8 +55,34 @@ export default function NewTaskModal(props: {
             buttonColor="#2f95dc"
             onPress={(value: number) => setType(value)}
           />
+
+        </View>
+        <View style={{alignSelf: "stretch"}}>
+          <TaskTypeContent taskType={type} task={task} setTask={setTask} />
         </View>
       </View>
     </ActionSheet>
   );
+}
+
+function createEmptyTask() : Task {
+  const now = new Date()
+  const nowUnix = now.getTime() / 1000;
+
+  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
+  const time = (now.getTime() - todayStart.getTime()) / 1000;
+
+
+
+  return {
+    id: nowUnix,
+    time,
+    schedule: {
+      type: Constants.ONE_TIME_EVENT,
+      occurrences: now.getDay() + WEEK_DAY_OFFSET,
+      startDate: null,
+      endDate: null
+    },
+    enabled: true
+  }
 }

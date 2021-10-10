@@ -33,3 +33,11 @@ export const getTimeFromSecondsShort = (seconds: number): string => {
     .toString()
     .padStart(2, "0")}`;
 };
+
+export const getStringDate = (date: Date) => {
+  const year = date.getUTCFullYear();
+  const month = `${date.getUTCMonth() + 1}`.padStart(2, "0");
+  const day = `${date.getUTCDate()}`.padStart(2, "0");
+
+  return `${year}-${month}-${day}`
+}

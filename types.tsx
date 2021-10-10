@@ -22,6 +22,8 @@ export interface Task {
   schedule: {
     type: number;
     occurrences: number;
+    startDate: number | null;
+    endDate: number | null;
   };
   enabled: boolean;
 }

@@ -23,7 +23,7 @@ import {
   REPEAT_WEEK,
   REPEAT_BIWEEK,
   REPEAT_MONTH,
-} from "../constants";
+} from "../AppConstants";
 
 const mockTasks: Task[] = [
   {
@@ -32,6 +32,8 @@ const mockTasks: Task[] = [
     schedule: {
       type: REPEAT_WEEK,
       occurrences: MONDAY | WENDNESDAY | FRIDAY,
+      startDate: 1633849259325,
+      endDate: 1633849259325
     },
     enabled: true,
   },
@@ -41,6 +43,8 @@ const mockTasks: Task[] = [
     schedule: {
       type: REPEAT_BIWEEK,
       occurrences: TUESDAY | THURSDAY,
+      startDate: 1633849259325,
+      endDate: 1633849259325
     },
     enabled: true,
   },
@@ -50,6 +54,8 @@ const mockTasks: Task[] = [
     schedule: {
       type: ONE_TIME_EVENT,
       occurrences: NONE,
+      startDate: 1633849259325,
+      endDate: 1633849259325
     },
     enabled: true,
   },
