@@ -11,6 +11,10 @@ import styles from "./styles";
 import { Task } from "../../../types";
 import { getStringDate } from "../../../util/time";
 
+const SELECTED_NONE = 0;
+const SELECTED_START_DAY = 1;
+const SELECTED_END_DAY = 2;
+
 export default function TaskTypeContent(props: {
   taskType: number;
   task: Task;
@@ -28,8 +32,8 @@ export default function TaskTypeContent(props: {
       )
         return {};
 
-      const start = new Date(props?.task?.schedule?.startDate * 1000);
-      const end = new Date(props?.task?.schedule?.endDate * 1000);
+      const start = new Date(props?.task?.schedule?.startDate ?? 1 * 1000);
+      const end = new Date(props?.task?.schedule?.endDate ?? 1 * 1000);
 
       //console.log(start);
       return generateMarkedDays(start, end);
@@ -44,7 +48,7 @@ export default function TaskTypeContent(props: {
           disableAllTouchEventsForDisabledDays={true}
           markingType={"period"}
           onDayPress={(day) => {
-            if (selectedDaysCounter === 0 || selectedDaysCounter === 2) {
+            if (selectedDaysCounter === SELECTED_NONE || selectedDaysCounter === SELECTED_END_DAY) {
               const start = new Date(0);
               start.setUTCFullYear(day.year);
               start.setUTCMonth(day.month - 1);
@@ -61,8 +65,8 @@ export default function TaskTypeContent(props: {
                 },
               }));
 
-              setSelectedDaysCounter(1);
-            } else if (selectedDaysCounter === 1) {
+              setSelectedDaysCounter(SELECTED_START_DAY);
+            } else if (selectedDaysCounter === SELECTED_START_DAY) {
               const end = new Date(0);
               end.setUTCFullYear(day.year);
               end.setUTCMonth(day.month - 1);
@@ -77,7 +81,7 @@ export default function TaskTypeContent(props: {
                   endDate: end.getTime() / 1000,
                 },
               }));
-              setSelectedDaysCounter(2);
+              setSelectedDaysCounter(SELECTED_END_DAY);
             }
           }}
           markedDates={markedDays}
@@ -87,7 +91,7 @@ export default function TaskTypeContent(props: {
   };
 
   const renderContentBasedOnType = (taskType: number) => {
-    const contentRendered = {
+    const contentRendered : Record<number, Function> = {
       [Constants.ONE_TIME_EVENT]: () => renderOneTimeEvent(),
     };
 
@@ -98,7 +102,7 @@ export default function TaskTypeContent(props: {
 }
 
 function generateMarkedDays(startDate: Date, endDate: Date) {
-  const result = {};
+  const result: Record<string, any> = {};
 
   console.log(startDate);
 
