@@ -24,7 +24,6 @@ export default function TaskTypeContent(props: {
     const [selectedDaysCounter, setSelectedDaysCounter] = useState(0);
     const now = new Date();
 
-    const minDate = getStringDate(now);
     const markedDays = useMemo(() => {
       if (
         props?.task?.schedule?.startDate === null &&
@@ -32,13 +31,11 @@ export default function TaskTypeContent(props: {
       )
         return {};
 
-      const start = new Date(props?.task?.schedule?.startDate ?? 1 * 1000);
-      const end = new Date(props?.task?.schedule?.endDate ?? 1 * 1000);
+      const start = getDateFromSeconds(props?.task?.schedule?.startDate);
+      const end = getDateFromSeconds(props?.task?.schedule?.endDate);
 
-      //console.log(start);
       return generateMarkedDays(start, end);
     }, [props?.task?.schedule?.startDate, props?.task?.schedule?.endDate]);
-    //console.log(markedDays);
 
     return (
       <View style={{}}>
@@ -74,14 +71,27 @@ export default function TaskTypeContent(props: {
 
               end.setTime(end.getTime() + (end.getTimezoneOffset() + 60 * 1000));
 
-              props?.setTask((task: Task) => ({
-                ...task,
-                schedule: {
-                  ...task?.schedule,
-                  endDate: end.getTime() / 1000,
-                },
-              }));
-              setSelectedDaysCounter(SELECTED_END_DAY);
+              if (getDateFromSeconds(props?.task?.schedule?.startDate).getTime() <= end.getTime()) {
+                props?.setTask((task: Task) => ({
+                  ...task,
+                  schedule: {
+                    ...task?.schedule,
+                    endDate: end.getTime() / 1000,
+                  },
+                }));
+                setSelectedDaysCounter(SELECTED_END_DAY);
+              } else {
+                props?.setTask((task: Task) => ({
+                  ...task,
+                  schedule: {
+                    ...task?.schedule,
+                    startDate: end.getTime() / 1000,
+                    endDate: null
+                  },
+                }));
+              }
+
+
             }
           }}
           markedDates={markedDays}
@@ -128,4 +138,9 @@ function generateMarkedDays(startDate: Date, endDate: Date) {
   };
 
   return result;
+}
+
+function getDateFromSeconds(seconds : number | null) {
+  if (seconds === null) return new Date(0);
+  return new Date(seconds * 1000);
 }
