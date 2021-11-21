@@ -29,6 +29,7 @@ export default function NewTaskModal(props: {
   const [task, setTask] = useState<Task>(createEmptyTask());
 
   useEffect(() => {
+    if (props?.showModal) setTask(createEmptyTask());
     actionSheetRef.current.setModalVisible(props?.showModal);
   }, [props?.showModal]);
 
@@ -72,16 +73,14 @@ function createEmptyTask() : Task {
   const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
   const time = (now.getTime() - todayStart.getTime()) / 1000;
 
-
-
   return {
     id: nowUnix,
     time,
     schedule: {
       type: Constants.ONE_TIME_EVENT,
       occurrences: now.getDay() + WEEK_DAY_OFFSET,
-      startDate: null,
-      endDate: null
+      startDate: nowUnix,
+      endDate: nowUnix
     },
     enabled: true
   }

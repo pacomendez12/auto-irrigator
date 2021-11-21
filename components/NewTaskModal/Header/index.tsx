@@ -4,7 +4,7 @@ import { View, Text } from "../../Themed";
 
 import ActionsHeader from "../../ActionsHeader";
 
-export default function NewTaskModal(props: {
+export default function Header(props: {
   onCancel: () => void;
   onAccept: () => void;
 }) {

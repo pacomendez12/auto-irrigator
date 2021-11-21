@@ -17,5 +17,6 @@ export default StyleSheet.create({
   },
   switchSelectorContainer: {
     alignSelf: "stretch",
+    marginHorizontal: 10
   },
 });
