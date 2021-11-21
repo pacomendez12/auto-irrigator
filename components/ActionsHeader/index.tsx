@@ -12,8 +12,8 @@ export default function ActionsHeader(props: {
   onCancel: () => void;
   onAccept: () => void;
   title: string;
-  leftIcon: string;
-  rightIcon: string;
+  leftIcon?: string;
+  rightIcon?: string;
 }) {
   return (
     <View style={styles.container}>

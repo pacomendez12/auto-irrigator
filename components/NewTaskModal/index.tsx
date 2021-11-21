@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
-import ActionSheet, { ActionSheetProps } from "react-native-actions-sheet";
+import ActionSheet from "react-native-actions-sheet";
 import SwitchSelector from "react-native-switch-selector";
 
 import { View, Text } from "../Themed";
@@ -24,13 +24,14 @@ export default function NewTaskModal(props: {
   showModal: boolean;
   onHide: () => void;
 }) {
-  const actionSheetRef = useRef<ActionSheetProps>();
+  const actionSheetRef = useRef<ActionSheet>(null);
   const [type, setType] = useState<number>(Constants.ONE_TIME_EVENT);
   const [task, setTask] = useState<Task>(createEmptyTask());
 
   useEffect(() => {
     if (props?.showModal) setTask(createEmptyTask());
-    actionSheetRef.current.setModalVisible(props?.showModal);
+    if (actionSheetRef.current)
+      actionSheetRef.current.setModalVisible(props?.showModal);
   }, [props?.showModal]);
 
   const onAccept = () => {
@@ -58,7 +59,7 @@ export default function NewTaskModal(props: {
           />
 
         </View>
-        <View style={{alignSelf: "stretch"}}>
+        <View style={{ alignSelf: "stretch" }}>
           <TaskTypeContent taskType={type} task={task} setTask={setTask} />
         </View>
       </View>
@@ -66,7 +67,7 @@ export default function NewTaskModal(props: {
   );
 }
 
-function createEmptyTask() : Task {
+function createEmptyTask(): Task {
   const now = new Date()
   const nowUnix = now.getTime() / 1000;
 

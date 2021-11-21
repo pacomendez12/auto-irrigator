@@ -1,15 +1,12 @@
-import React, { useRef, useEffect } from "react";
-
-import { View, Text } from "../../Themed";
-
+import React from "react";
+import { View } from "../../Themed";
 import ActionsHeader from "../../ActionsHeader";
 
 export default function Header(props: {
   onCancel: () => void;
   onAccept: () => void;
 }) {
-  return (
-    <View
+    return (<View
       style={{
         flexDirection: "column",
         alignItems: "center",
