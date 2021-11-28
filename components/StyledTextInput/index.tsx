@@ -4,8 +4,12 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import { View } from "../Themed";
 
+const defaultIconColor = "#aeaeae";
 
-export default function StyledTextInput(props: TextInputProps & { leftIconName?: string, rightIconName?: string }) {
+export default function StyledTextInput(props: TextInputProps & {
+    leftIconName?: typeof MaterialCommunityIcons.defaultProps,
+    rightIconName?: typeof MaterialCommunityIcons.defaultProps
+}) {
     return (
         <View style={{
             flexDirection: "row",
@@ -16,9 +20,9 @@ export default function StyledTextInput(props: TextInputProps & { leftIconName?:
             borderRadius: 10,
             minHeight: 50
         }}>
-            {props?.leftIconName && <MaterialCommunityIcons name={props?.leftIconName} size={24} color="#aeaeae" style={{ marginLeft: 10 }} />}
+            {props?.leftIconName && <MaterialCommunityIcons name={props?.leftIconName} size={24} color={defaultIconColor} style={{ marginLeft: 10 }} />}
             <TextInput style={{ height: 40, flex: 1, marginLeft: 10, color: "#5f5f5f" }} {...props} />
-            {props?.rightIconName && <MaterialCommunityIcons name={props?.rightIconName} size={24} color="#aeaeae" style={{ marginHorizontal: 10 }} />}
+            {props?.rightIconName && <MaterialCommunityIcons name={props?.rightIconName} size={24} color={defaultIconColor} style={{ marginHorizontal: 10 }} />}
         </View>
     );
 };
