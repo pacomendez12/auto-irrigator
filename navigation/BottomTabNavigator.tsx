@@ -8,6 +8,7 @@ import useColorScheme from "../hooks/useColorScheme";
 import TabOneScreen from "../screens/ManualIrrigation";
 import TabTwoScreen from "../screens/AutomaticIrrigation";
 import { BottomTabParamList, TabOneParamList, TabTwoParamList } from "../types";
+import Spinner from "../components/Spinner";
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
 
@@ -57,7 +58,7 @@ function ManualIrrigationNavigator() {
       <Manual.Screen
         name="TabOneScreen"
         component={TabOneScreen}
-        options={{ headerTitle: "Manual" }}
+        options={{ headerTitle: "Manual", headerRight: () => (<Spinner animated={true} />)}}
       />
     </Manual.Navigator>
   );

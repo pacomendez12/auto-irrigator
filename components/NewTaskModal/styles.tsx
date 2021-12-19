@@ -9,7 +9,6 @@ export default StyleSheet.create({
   label: {
     fontSize: 12,
     textAlign: "center",
-    backgroundColor: "#f5f5f5",
     color: "#1f1f1f",
     paddingHorizontal: 10,
     paddingVertical: 2,
@@ -19,4 +18,11 @@ export default StyleSheet.create({
     alignSelf: "stretch",
     marginHorizontal: 10
   },
+  taskTypeSelector: {
+    alignSelf: "stretch",
+    paddingBottom: 25,
+    marginBottom: 10,
+    borderBottomWidth: 0.5,
+    borderBottomColor: "#e0e0e0"
+  }
 });

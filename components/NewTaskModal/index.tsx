@@ -49,16 +49,18 @@ export default function NewTaskModal(props: {
       onClose={props?.onHide}
     >
       <View style={styles.container}>
-        <Text style={styles.label}>Tipo de tarea</Text>
-        <View style={styles.switchSelectorContainer}>
-          <SwitchSelector
-            options={options}
-            initial={0}
-            buttonColor="#2f95dc"
-            onPress={(value: number) => setType(value)}
-          />
-
+        <View style={styles.taskTypeSelector}>
+          <Text style={styles.label}>Tipo de tarea</Text>
+          <View style={styles.switchSelectorContainer}>
+            <SwitchSelector
+              options={options}
+              initial={0}
+              buttonColor="#2f95dc"
+              onPress={(value: number) => setType(value)}
+            />
+          </View>
         </View>
+
         <View style={{ alignSelf: "stretch" }}>
           <TaskTypeContent taskType={type} task={task} setTask={setTask} />
         </View>
