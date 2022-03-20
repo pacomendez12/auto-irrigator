@@ -1,5 +1,8 @@
 import React from "react";
+import { StyleSheet } from 'react-native';
 import { Badge } from "react-native-paper";
+
+import Pressable from "../../Pressable";
 
 import { View } from "../../Themed";
 import styles from "./styles";
@@ -7,38 +10,35 @@ import styles from "./styles";
 const initials = ["L", "M", "I", "J", "V", "S", "D"];
 
 
-export default function getDaysString({
-  occurrences,
+export default function DaysIndicator({
+  occurrences, size, isEditable, setOcurrences
 }: {
   occurrences: number;
+  size: number;
+  isEditable: boolean;
+  setOcurrences?: (ocurrences: number) => any;
 }) {
-  const totalDays = countDays(occurrences);
-  if (totalDays === 0) return null;
-
   const days = initials.map((_: string, dayIdx: number) => {
     return ((occurrences >> dayIdx) & 0x1) === 1;
   });
 
+  const horizontalMargin = Math.floor((size - 15) / 5) > 0 ? Math.floor((size - 15) / 5) : 0;
+
   return (
-    <React.Fragment>
+    <View style={styles.daysContainer}>
       {days.map((dayEnabled, idx) => {
         const style = dayEnabled ? styles.active : styles.inactive;
         return (
-          <View key={idx} style={styles.container}>
-            <Badge visible style={style}>
+          <Pressable key={idx} style={StyleSheet.flatten([styles.container, { marginHorizontal: horizontalMargin }])} disabled={!isEditable} onPress={() => {
+            if (setOcurrences)
+              setOcurrences(occurrences ^ (1 << idx) ?? 0);
+          }}>
+            <Badge visible style={style} size={size}>
               {initials[idx]}
             </Badge>
-          </View>
+          </Pressable>
         );
       })}
-    </React.Fragment>
+    </View>
   );
-}
-
-function countDays(daysFlags: number) {
-  let counter = 0;
-  for (let i = 0; i < 8; i++) {
-    if (((daysFlags >> i) & 0x1) === 1) counter++;
-  }
-  return counter;
 }

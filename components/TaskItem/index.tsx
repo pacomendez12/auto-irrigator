@@ -38,7 +38,7 @@ export default function TaskItem({
           </View>
 
           <View style={styles.daysContainer}>
-            <DaysIndicator occurrences={task?.schedule?.occurrences} />
+            <DaysIndicator occurrences={task?.schedule?.occurrences} size={20} isEditable={false} />
           </View>
         </View>
         <View style={styles.containerRight}>

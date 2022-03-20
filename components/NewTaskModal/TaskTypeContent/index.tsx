@@ -4,6 +4,7 @@ import * as Constants from "../../../AppConstants";
 import { Task } from "../../../types";
 
 import OneTimeEvent from "./components/OneTimeEvent";
+import MultipleWeekEvent from "./components/MultipleWeeksEvent";
 
 export default function TaskTypeContent(props: {
   taskType: number;
@@ -14,6 +15,7 @@ export default function TaskTypeContent(props: {
   const renderContentBasedOnType = (taskType: number) => {
     const contentRendered : Record<number, Function> = {
       [Constants.ONE_TIME_EVENT]: () => <OneTimeEvent task={props?.task} setTask={props?.setTask} />,
+      [Constants.REPEAT_WEEK]: () => <MultipleWeekEvent task={props?.task} setTask={props?.setTask} weeks={1} />
     };
 
     return (contentRendered[taskType] || (() => null))();

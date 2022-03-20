@@ -2,7 +2,6 @@ import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
   container: {
-    marginHorizontal: 1,
     backgroundColor: "transparent",
   },
   active: {
@@ -13,4 +12,9 @@ export default StyleSheet.create({
     backgroundColor: "#f2f2f2",
     color: "gray",
   },
+  daysContainer: {
+    flexDirection: 'row',
+    justifyContent:'center',
+    backgroundColor: 'transparent'
+  }
 });
