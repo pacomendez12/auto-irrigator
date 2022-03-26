@@ -50,11 +50,11 @@ export default function NewTaskModal(props: {
     >
       <View style={styles.container}>
         <View style={styles.taskTypeSelector}>
-          <Text style={styles.label}>Tipo de tarea</Text>
+          {/* <Text style={styles.label}>Tipo de tarea</Text> */}
           <View style={styles.switchSelectorContainer}>
             <SwitchSelector
               options={options}
-              initial={0}
+              initial={type}
               buttonColor="#2f95dc"
               onPress={(value: number) => setType(value)}
             />
@@ -71,7 +71,9 @@ export default function NewTaskModal(props: {
 
 function createEmptyTask(): Task {
   const now = new Date()
-  const nowUnix = now.getTime() / 1000;
+  const nowWithoutSeconds = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), now.getUTCMinutes(), 0);
+
+  const nowUnix = nowWithoutSeconds.getTime() / 1000;
 
   const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
   const time = (now.getTime() - todayStart.getTime()) / 1000;
