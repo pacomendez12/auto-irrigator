@@ -8,8 +8,8 @@ import Header from "./Header";
 import * as Constants from "../../AppConstants";
 
 import styles from "./styles";
-import TaskTypeContent from './TaskTypeContent/index';
-import { Task } from '../../types';
+import TaskTypeContent from "./TaskTypeContent/index";
+import { Task } from "../../types";
 
 const options = [
   { label: "Una vez", value: Constants.ONE_TIME_EVENT },
@@ -17,8 +17,6 @@ const options = [
   { label: "Quincenal", value: Constants.REPEAT_BIWEEK },
   { label: "Mensual", value: Constants.REPEAT_MONTH },
 ];
-
-const WEEK_DAY_OFFSET = 1;
 
 export default function NewTaskModal(props: {
   showModal: boolean;
@@ -47,6 +45,7 @@ export default function NewTaskModal(props: {
         <Header onAccept={onAccept} onCancel={props?.onHide} />
       }
       onClose={props?.onHide}
+      closeOnTouchBackdrop={false}
     >
       <View style={styles.container}>
         <View style={styles.taskTypeSelector}>
@@ -62,7 +61,7 @@ export default function NewTaskModal(props: {
         </View>
 
         <View style={{ alignSelf: "stretch" }}>
-          <TaskTypeContent taskType={type} task={task} setTask={setTask} />
+          <TaskTypeContent taskType={type} task={task} setTask={setTask} actionSheetRef={actionSheetRef} />
         </View>
       </View>
     </ActionSheet>
@@ -70,12 +69,26 @@ export default function NewTaskModal(props: {
 }
 
 function createEmptyTask(): Task {
-  const now = new Date()
-  const nowWithoutSeconds = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), now.getUTCMinutes(), 0);
+  const now = new Date();
+  const nowWithoutSeconds = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate(),
+    now.getHours(),
+    now.getUTCMinutes(),
+    0
+  );
 
   const nowUnix = nowWithoutSeconds.getTime() / 1000;
 
-  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
+  const todayStart = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate(),
+    0,
+    0,
+    0
+  );
   const time = (now.getTime() - todayStart.getTime()) / 1000;
 
   return {
@@ -83,10 +96,10 @@ function createEmptyTask(): Task {
     time,
     schedule: {
       type: Constants.ONE_TIME_EVENT,
-      occurrences: now.getDay() + WEEK_DAY_OFFSET,
+      occurrences: 0,
       startDate: nowUnix,
-      endDate: nowUnix
+      endDate: nowUnix,
     },
-    enabled: true
-  }
+    enabled: true,
+  };
 }

@@ -1,4 +1,5 @@
 import React, { Dispatch, SetStateAction } from "react";
+import { SafeAreaView, ScrollView } from "react-native";
 import DatePickerTextInput from "../../../../DatePickerTextInput";
 import TimePickerTextInput from "../../../../TimePickerTextInput";
 
@@ -11,10 +12,12 @@ export default function MultipleWeekEvent({
   task,
   setTask,
   weeks,
+  actionSheetRef,
 }: {
   task: Task;
   setTask: Dispatch<SetStateAction<Task>>;
   weeks: number;
+  actionSheetRef: any;
 }) {
   weeks = weeks < 0 ? 1 : weeks > 4 ? 4 : weeks;
 
@@ -42,56 +45,72 @@ export default function MultipleWeekEvent({
   };
 
   return (
-    <View>
-      <View
-        style={{
-          paddingVertical: 10,
-        }}
+    <SafeAreaView>
+      <ScrollView
+        nestedScrollEnabled={true}
+        onMomentumScrollEnd={() =>
+          actionSheetRef?.current?.handleChildScrollEnd()
+        }
       >
-        {new Array(weeks).fill(0).map((_, idx) => {
-          return (
-            <View key={idx}>
-              {weeks > 1 ? (
-                <Text
-                  style={{
-                    fontSize: 10,
-                    marginBottom: 5,
-                    textAlign: "center",
-                    color: "#aaaaaaff",
-                  }}
-                >{`Semana ${idx + 1}`}</Text>
-              ) : null}
-              <DaysIndicator
-                occurrences={task?.schedule?.occurrences}
-                size={40}
-                isEditable
-                setOcurrences={setOcurrences}
-                offset={idx}
-              />
-            </View>
-          );
-        })}
-      </View>
-      <View>
-        <DatePickerTextInput
-          value={
-            task?.schedule?.startDate
-              ? new Date(task.schedule.startDate * 1000)
-              : new Date()
-          }
-          setValue={setDate}
-          title="Fecha inicio"
-        />
-        <TimePickerTextInput
-          value={
-            task?.schedule?.startDate
-              ? new Date(task.schedule.startDate * 1000)
-              : new Date()
-          }
-          setValue={setDate}
-          title="Hora"
-        />
-      </View>
-    </View>
+        <View
+          style={{
+            paddingVertical: 10,
+          }}
+        >
+          {new Array(weeks).fill(0).map((_, idx) => {
+            return (
+              <View key={idx}>
+                {weeks > 1 ? (
+                  <Text
+                    style={{
+                      fontSize: 10,
+                      marginBottom: 5,
+                      textAlign: "center",
+                      color: "#aaaaaaff",
+                    }}
+                  >{`Semana ${idx + 1}`}</Text>
+                ) : null}
+                <DaysIndicator
+                  occurrences={task?.schedule?.occurrences}
+                  size={40}
+                  isEditable
+                  setOcurrences={setOcurrences}
+                  offset={idx}
+                />
+              </View>
+            );
+          })}
+        </View>
+        <View>
+          <DatePickerTextInput
+            value={
+              task?.schedule?.startDate
+                ? new Date(task.schedule.startDate * 1000)
+                : new Date()
+            }
+            setValue={setDate}
+            title="Fecha inicio"
+          />
+          <DatePickerTextInput
+            value={
+              task?.schedule?.startDate
+                ? new Date(task.schedule.startDate * 1000)
+                : new Date()
+            }
+            setValue={setDate}
+            title="Fecha fin"
+          />
+          <TimePickerTextInput
+            value={
+              task?.schedule?.startDate
+                ? new Date(task.schedule.startDate * 1000)
+                : new Date()
+            }
+            setValue={setDate}
+            title="Hora"
+          />
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }

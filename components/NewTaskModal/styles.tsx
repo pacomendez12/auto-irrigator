@@ -4,7 +4,6 @@ export default StyleSheet.create({
   container: {
     justifyContent: "center",
     alignItems: "center",
-    marginVertical: 20,
   },
   label: {
     fontSize: 12,
@@ -16,13 +15,13 @@ export default StyleSheet.create({
   },
   switchSelectorContainer: {
     alignSelf: "stretch",
-    marginHorizontal: 10
+    marginHorizontal: 10,
   },
   taskTypeSelector: {
     alignSelf: "stretch",
     paddingBottom: 25,
     marginBottom: 10,
     borderBottomWidth: 0.5,
-    borderBottomColor: "#e0e0e0"
-  }
+    borderBottomColor: "#e0e0e0",
+  },
 });

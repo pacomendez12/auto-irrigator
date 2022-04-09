@@ -12,6 +12,7 @@ export default function Header(props: {
         alignItems: "center",
         borderTopLeftRadius: 10,
         borderTopRightRadius: 10,
+        minHeight: 90
       }}
     >
       <View
