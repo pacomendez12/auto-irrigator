@@ -9,17 +9,20 @@ import styles from "./styles";
 
 const initials = ["L", "M", "I", "J", "V", "S", "D"];
 
+const daysLength = initials.length;
+
 
 export default function DaysIndicator({
-  occurrences, size, isEditable, setOcurrences
+  occurrences, size, isEditable, setOcurrences, offset = 0
 }: {
   occurrences: number;
   size: number;
   isEditable: boolean;
+  offset: number;
   setOcurrences?: (ocurrences: number) => any;
 }) {
   const days = initials.map((_: string, dayIdx: number) => {
-    return ((occurrences >> dayIdx) & 0x1) === 1;
+    return ((occurrences >> (offset * daysLength + dayIdx)) & 0x1) === 1;
   });
 
   const horizontalMargin = Math.floor((size - 15) / 5) > 0 ? Math.floor((size - 15) / 5) : 0;
@@ -31,7 +34,7 @@ export default function DaysIndicator({
         return (
           <Pressable key={idx} style={StyleSheet.flatten([styles.container, { marginHorizontal: horizontalMargin }])} disabled={!isEditable} onPress={() => {
             if (setOcurrences)
-              setOcurrences(occurrences ^ (1 << idx) ?? 0);
+              setOcurrences(occurrences ^ (1 << (offset * daysLength + idx)) ?? 0);
           }}>
             <Badge visible style={style} size={size}>
               {initials[idx]}

@@ -3,6 +3,7 @@ import { StyleSheet } from "react-native";
 export default StyleSheet.create({
   container: {
     backgroundColor: "transparent",
+    paddingBottom: 10
   },
   active: {
     backgroundColor: "#2f95dc",

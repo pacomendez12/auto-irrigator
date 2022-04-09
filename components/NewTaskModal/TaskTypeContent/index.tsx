@@ -15,7 +15,9 @@ export default function TaskTypeContent(props: {
   const renderContentBasedOnType = (taskType: number) => {
     const contentRendered : Record<number, Function> = {
       [Constants.ONE_TIME_EVENT]: () => <OneTimeEvent task={props?.task} setTask={props?.setTask} />,
-      [Constants.REPEAT_WEEK]: () => <MultipleWeekEvent task={props?.task} setTask={props?.setTask} weeks={1} />
+      [Constants.REPEAT_WEEK]: () => <MultipleWeekEvent task={props?.task} setTask={props?.setTask} weeks={1} />,
+      [Constants.REPEAT_BIWEEK]: () => <MultipleWeekEvent task={props?.task} setTask={props?.setTask} weeks={2} />,
+      [Constants.REPEAT_MONTH]: () => <MultipleWeekEvent task={props?.task} setTask={props?.setTask} weeks={4} />
     };
 
     return (contentRendered[taskType] || (() => null))();
