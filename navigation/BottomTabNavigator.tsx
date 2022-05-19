@@ -18,7 +18,15 @@ export default function BottomTabNavigator() {
   return (
     <BottomTab.Navigator
       initialRouteName="Manual"
-      tabBarOptions={{ activeTintColor: Colors[colorScheme].tint }}
+      screenOptions={{
+        tabBarActiveTintColor: Colors[colorScheme].tint,
+        tabBarStyle: [
+          {
+            display: "flex"
+          },
+          null
+        ]
+      }}
     >
       <BottomTab.Screen
         name="Manual"
@@ -27,6 +35,8 @@ export default function BottomTabNavigator() {
           tabBarIcon: ({ color }) => (
             <TabBarIcon name="ios-cog" color={color} />
           ),
+          headerTitle: "Manual",
+          headerRight: () => (<Spinner animated={true} />)
         }}
       />
       <BottomTab.Screen
@@ -36,6 +46,7 @@ export default function BottomTabNavigator() {
           tabBarIcon: ({ color }) => (
             <TabBarIcon name="ios-calendar" color={color} />
           ),
+          headerTitle: "Automático",
         }}
       />
     </BottomTab.Navigator>
@@ -58,7 +69,7 @@ function ManualIrrigationNavigator() {
       <Manual.Screen
         name="TabOneScreen"
         component={TabOneScreen}
-        options={{ headerTitle: "Manual", headerRight: () => (<Spinner animated={true} />)}}
+        options={{ header: () => null }}
       />
     </Manual.Navigator>
   );
@@ -72,7 +83,7 @@ function AutomaticIrrigationNavigator() {
       <Automatic.Screen
         name="TabTwoScreen"
         component={TabTwoScreen}
-        options={{ headerTitle: "Automático" }}
+        options={{ header: () => null }}
       />
     </Automatic.Navigator>
   );
