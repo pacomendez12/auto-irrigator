@@ -15,7 +15,6 @@ export default function OneTimeEvent({
   setTask: Dispatch<SetStateAction<Task>>;
   actionSheetRef: any;
 }) {
-
   const setDate = (date: Date) => {
     setTask((oldTask: Task) => {
       return {
@@ -25,6 +24,15 @@ export default function OneTimeEvent({
           startDate: date.getTime() / 1000,
           endDate: date.getTime() / 1000,
         },
+      };
+    });
+  };
+
+  const setTime = (date: Date) => {
+    setTask((oldTask: Task) => {
+      return {
+        ...oldTask,
+        time: getTimeFromDate(date),
       };
     });
   };
@@ -45,9 +53,16 @@ export default function OneTimeEvent({
             ? new Date(task.schedule.startDate * 1000)
             : new Date()
         }
-        setValue={setDate}
+        setValue={setTime}
       />
       <Duration task={task} setTask={setTask} />
     </View>
   );
+}
+
+function getTimeFromDate(date: Date) {
+  if (!date) return 0;
+  let seconds = date.getSeconds();
+  seconds += date.getMinutes() * 60;
+  return seconds + date.getHours() * 60 * 60;
 }

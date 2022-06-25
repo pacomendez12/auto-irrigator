@@ -22,15 +22,35 @@ export default function MultipleWeekEvent({
 }) {
   weeks = weeks < 0 ? 1 : weeks > 4 ? 4 : weeks;
 
-  const setDate = (date: Date) => {
+  const setStartDate = (date: Date) => {
     setTask((oldTask: Task) => {
       return {
         ...oldTask,
         schedule: {
           ...oldTask.schedule,
           startDate: date.getTime() / 1000,
+        },
+      };
+    });
+  };
+
+  const setEndDate = (date: Date) => {
+    setTask((oldTask: Task) => {
+      return {
+        ...oldTask,
+        schedule: {
+          ...oldTask.schedule,
           endDate: date.getTime() / 1000,
         },
+      };
+    });
+  };
+
+  const setTime = (date: Date) => {
+    setTask((oldTask: Task) => {
+      return {
+        ...oldTask,
+        time: getTimeFromDate(date),
       };
     });
   };
@@ -89,7 +109,7 @@ export default function MultipleWeekEvent({
                 ? new Date(task.schedule.startDate * 1000)
                 : new Date()
             }
-            setValue={setDate}
+            setValue={setStartDate}
             title="Fecha inicio"
           />
           <DatePickerTextInput
@@ -98,7 +118,7 @@ export default function MultipleWeekEvent({
                 ? new Date(task.schedule.startDate * 1000)
                 : new Date()
             }
-            setValue={setDate}
+            setValue={setEndDate}
             title="Fecha fin"
           />
           <TimePickerTextInput
@@ -107,7 +127,7 @@ export default function MultipleWeekEvent({
                 ? new Date(task.schedule.startDate * 1000)
                 : new Date()
             }
-            setValue={setDate}
+            setValue={setTime}
             title="Hora"
           />
           <Duration task={task} setTask={setTask} />
@@ -115,4 +135,12 @@ export default function MultipleWeekEvent({
       </ScrollView>
     </SafeAreaView>
   );
+}
+
+
+function getTimeFromDate(date: Date) {
+  if (!date) return 0;
+  let seconds = date.getSeconds();
+  seconds += date.getMinutes() * 60;
+  return seconds + date.getHours() * 60 * 60;
 }

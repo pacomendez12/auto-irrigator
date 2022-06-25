@@ -8,6 +8,7 @@ import useDuration, { TOTAL_DURATION_STEPS } from "../../hooks/useDuration";
 import { Task } from "../../../../../types";
 
 import styles from "./styles";
+import { ColorPropType } from "react-native";
 
 export default function Duration({
   task,

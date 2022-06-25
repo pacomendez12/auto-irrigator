@@ -9,7 +9,7 @@ export default function useDuration(
   (value: number | Array<number>) => void
 ] {
   const [durationIndex, setDurationIndex] = useState<number>(
-    seconds.indexOf(initialDuration) ?? 0
+    getIndexFromSeconds(initialDuration)
   );
 
   const setDuration = (value: number | Array<number>): void => {
@@ -24,3 +24,8 @@ export default function useDuration(
 }
 
 export const TOTAL_DURATION_STEPS = seconds.length - 1;
+
+function getIndexFromSeconds(s: number) {
+  const idx = seconds.indexOf(s);
+  return idx === -1 ? 0 : idx;
+}

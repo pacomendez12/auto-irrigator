@@ -21,6 +21,7 @@ const options = [
 export default function NewTaskModal(props: {
   showModal: boolean;
   onHide: () => void;
+  onAddTask: (task: Task) => void;
 }) {
   const actionSheetRef = useRef<ActionSheet>(null);
   const [type, setType] = useState<number>(Constants.ONE_TIME_EVENT);
@@ -34,6 +35,7 @@ export default function NewTaskModal(props: {
 
   const onAccept = () => {
     props?.onHide();
+    props?.onAddTask(task);
   };
 
   return (
@@ -61,7 +63,12 @@ export default function NewTaskModal(props: {
         </View>
 
         <View style={{ alignSelf: "stretch" }}>
-          <TaskTypeContent taskType={type} task={task} setTask={setTask} actionSheetRef={actionSheetRef} />
+          <TaskTypeContent
+            taskType={type}
+            task={task}
+            setTask={setTask}
+            actionSheetRef={actionSheetRef}
+          />
         </View>
       </View>
     </ActionSheet>
@@ -89,7 +96,7 @@ function createEmptyTask(): Task {
     0,
     0
   );
-  const time = (now.getTime() - todayStart.getTime()) / 1000;
+  const time = Math.floor((now.getTime() - todayStart.getTime()) / 1000);
 
   return {
     id: nowUnix,

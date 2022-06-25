@@ -7,7 +7,7 @@ import styles from "./styles";
 export default function EmptyState(props: {
   title: String;
   message: String;
-  icon: { name: String; family: String; color: String } | String;
+  icon: { name: String; family?: String; color?: String } | String;
 }) {
   return (
     <View style={styles.container}>

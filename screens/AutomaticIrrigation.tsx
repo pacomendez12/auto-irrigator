@@ -29,40 +29,43 @@ const mockTasks: Task[] = [
   {
     id: 1,
     time: 1480,
+    duration: 0,
     schedule: {
       type: REPEAT_WEEK,
       occurrences: MONDAY | WENDNESDAY | FRIDAY,
       startDate: 1633849259325,
-      endDate: 1633849259325
+      endDate: 1633849259325,
     },
     enabled: true,
   },
   {
     id: 2,
     time: 480,
+    duration: 0,
     schedule: {
       type: REPEAT_BIWEEK,
       occurrences: TUESDAY | THURSDAY,
       startDate: 1633849259325,
-      endDate: 1633849259325
+      endDate: 1633849259325,
     },
     enabled: true,
   },
   {
     id: 3,
     time: 72020,
+    duration: 0,
     schedule: {
       type: ONE_TIME_EVENT,
       occurrences: NONE,
       startDate: 1633849259325,
-      endDate: 1633849259325
+      endDate: 1633849259325,
     },
     enabled: true,
   },
 ];
 
 export default function TabTwoScreen() {
-  const [tasks, setTasks] = useState(cloneDeep(mockTasks));
+  const [tasks, setTasks] = useState(cloneDeep([] || mockTasks));
   const currentTask = useRef<Task | null>(null);
   const [showNewTaskModal, setShowNewTaskModal] = useState(false);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
@@ -91,6 +94,10 @@ export default function TabTwoScreen() {
       tasks.filter((task) => task?.id !== currentTask.current?.id)
     );
     currentTask.current = null;
+  };
+
+  const onAddTask = (task: Task) => {
+    setTasks((tasks: [Task]) => [...tasks, task]);
   };
 
   const renderItem = ({ item }: { item: Task }) => {
@@ -133,6 +140,7 @@ export default function TabTwoScreen() {
       <NewTaskModal
         showModal={showNewTaskModal}
         onHide={() => setShowNewTaskModal(false)}
+        onAddTask={onAddTask}
       />
       <Alert
         title="Eliminar"
