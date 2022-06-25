@@ -1,6 +1,7 @@
-import React, { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 import DatePickerTextInput from "../../../../DatePickerTextInput";
 import TimePickerTextInput from "../../../../TimePickerTextInput";
+import Duration from "../Duration";
 
 import { View } from "../../../../Themed";
 import { Task } from "../../../../../types";
@@ -14,6 +15,7 @@ export default function OneTimeEvent({
   setTask: Dispatch<SetStateAction<Task>>;
   actionSheetRef: any;
 }) {
+
   const setDate = (date: Date) => {
     setTask((oldTask: Task) => {
       return {
@@ -45,6 +47,7 @@ export default function OneTimeEvent({
         }
         setValue={setDate}
       />
+      <Duration task={task} setTask={setTask} />
     </View>
   );
 }

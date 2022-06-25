@@ -94,6 +94,7 @@ function createEmptyTask(): Task {
   return {
     id: nowUnix,
     time,
+    duration: 0,
     schedule: {
       type: Constants.ONE_TIME_EVENT,
       occurrences: 0,

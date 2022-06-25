@@ -19,6 +19,7 @@ export type TabTwoParamList = {
 export interface Task {
   id: number;
   time: number;
+  duration: number;
   schedule: {
     type: number;
     occurrences: number;

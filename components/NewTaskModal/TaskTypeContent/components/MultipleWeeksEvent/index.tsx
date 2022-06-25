@@ -2,6 +2,7 @@ import React, { Dispatch, SetStateAction } from "react";
 import { SafeAreaView, ScrollView } from "react-native";
 import DatePickerTextInput from "../../../../DatePickerTextInput";
 import TimePickerTextInput from "../../../../TimePickerTextInput";
+import Duration from "../Duration";
 
 import { View, Text } from "../../../../Themed";
 import { Task } from "../../../../../types";
@@ -109,6 +110,7 @@ export default function MultipleWeekEvent({
             setValue={setDate}
             title="Hora"
           />
+          <Duration task={task} setTask={setTask} />
         </View>
       </ScrollView>
     </SafeAreaView>
