@@ -24,7 +24,6 @@ export default function NewTaskModal(props: {
   onAddTask: (task: Task) => void;
 }) {
   const actionSheetRef = useRef<ActionSheet>(null);
-  const [type, setType] = useState<number>(Constants.ONE_TIME_EVENT);
   const [task, setTask] = useState<Task>(createEmptyTask());
 
   useEffect(() => {
@@ -36,6 +35,13 @@ export default function NewTaskModal(props: {
   const onAccept = () => {
     props?.onHide();
     props?.onAddTask(task);
+  };
+
+  const setTaskType = (type: number) => {
+    setTask((oldTask: Task) => ({
+      ...oldTask,
+      schedule: { ...oldTask.schedule, type },
+    }));
   };
 
   return (
@@ -55,16 +61,16 @@ export default function NewTaskModal(props: {
           <View style={styles.switchSelectorContainer}>
             <SwitchSelector
               options={options}
-              initial={type}
+              initial={task?.schedule?.type ?? Constants.ONE_TIME_EVENT}
               buttonColor="#2f95dc"
-              onPress={(value: number) => setType(value)}
+              onPress={(value: number) => setTaskType(value)}
             />
           </View>
         </View>
 
         <View style={{ alignSelf: "stretch" }}>
           <TaskTypeContent
-            taskType={type}
+            taskType={task?.schedule?.type ?? Constants.ONE_TIME_EVENT}
             task={task}
             setTask={setTask}
             actionSheetRef={actionSheetRef}
@@ -99,7 +105,7 @@ function createEmptyTask(): Task {
   const time = Math.floor((now.getTime() - todayStart.getTime()) / 1000);
 
   return {
-    id: nowUnix,
+    id: nowUnix - Math.random() * Number.MAX_SAFE_INTEGER,
     time,
     duration: 0,
     schedule: {

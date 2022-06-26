@@ -24,11 +24,17 @@ export default function MultipleWeekEvent({
 
   const setStartDate = (date: Date) => {
     setTask((oldTask: Task) => {
+      const startDate = date.getTime() / 1000;
+      const endDate =
+        startDate > (oldTask?.schedule?.endDate ?? 0)
+          ? startDate
+          : oldTask?.schedule?.endDate;
       return {
         ...oldTask,
         schedule: {
           ...oldTask.schedule,
-          startDate: date.getTime() / 1000,
+          startDate,
+          endDate,
         },
       };
     });
@@ -36,11 +42,17 @@ export default function MultipleWeekEvent({
 
   const setEndDate = (date: Date) => {
     setTask((oldTask: Task) => {
+      const endDate = date.getTime() / 1000;
+      const startDate =
+        endDate < (oldTask?.schedule?.startDate ?? Number.MAX_VALUE)
+          ? endDate
+          : oldTask?.schedule?.startDate;
       return {
         ...oldTask,
         schedule: {
           ...oldTask.schedule,
-          endDate: date.getTime() / 1000,
+          startDate,
+          endDate,
         },
       };
     });
@@ -64,6 +76,14 @@ export default function MultipleWeekEvent({
       },
     }));
   };
+
+  const startDate = task?.schedule?.startDate
+    ? new Date(task.schedule.startDate * 1000)
+    : new Date();
+
+  const endDate = task?.schedule?.endDate
+    ? new Date(task.schedule.endDate * 1000)
+    : new Date();
 
   return (
     <SafeAreaView>
@@ -104,27 +124,19 @@ export default function MultipleWeekEvent({
         </View>
         <View>
           <DatePickerTextInput
-            value={
-              task?.schedule?.startDate
-                ? new Date(task.schedule.startDate * 1000)
-                : new Date()
-            }
+            value={startDate}
             setValue={setStartDate}
             title="Fecha inicio"
           />
           <DatePickerTextInput
-            value={
-              task?.schedule?.startDate
-                ? new Date(task.schedule.startDate * 1000)
-                : new Date()
-            }
+            value={endDate}
             setValue={setEndDate}
             title="Fecha fin"
           />
           <TimePickerTextInput
             value={
               task?.schedule?.startDate
-                ? new Date(task.schedule.startDate * 1000)
+                ? new Date(getDateFromTime(startDate, task.time))
                 : new Date()
             }
             setValue={setTime}
@@ -137,6 +149,21 @@ export default function MultipleWeekEvent({
   );
 }
 
+function getDateFromTime(initialDate: Date, totalSeconds: number) {
+  if (!initialDate) return new Date();
+  const result = new Date(initialDate);
+
+  const hours = totalSeconds / 60 / 60;
+  result.setHours(hours);
+
+  const minutes = (totalSeconds % (60 * 60)) / 60;
+  result.setMinutes(minutes);
+
+  result.setSeconds(0);
+  result.setMilliseconds(0);
+
+  return result;
+}
 
 function getTimeFromDate(date: Date) {
   if (!date) return 0;

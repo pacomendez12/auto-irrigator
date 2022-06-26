@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import DatePickerTextInput from "../../../../DatePickerTextInput";
 import TimePickerTextInput from "../../../../TimePickerTextInput";
 import Duration from "../Duration";
@@ -37,20 +37,17 @@ export default function OneTimeEvent({
     });
   };
 
+  const date = task?.schedule?.startDate
+    ? new Date(task.schedule.startDate * 1000)
+    : new Date();
+
   return (
     <View>
-      <DatePickerTextInput
-        value={
-          task?.schedule?.startDate
-            ? new Date(task.schedule.startDate * 1000)
-            : new Date()
-        }
-        setValue={setDate}
-      />
+      <DatePickerTextInput value={date} setValue={setDate} />
       <TimePickerTextInput
         value={
           task?.schedule?.startDate
-            ? new Date(task.schedule.startDate * 1000)
+            ? new Date(getDateFromTime(date, task.time))
             : new Date()
         }
         setValue={setTime}
@@ -58,6 +55,22 @@ export default function OneTimeEvent({
       <Duration task={task} setTask={setTask} />
     </View>
   );
+}
+
+function getDateFromTime(initialDate: Date, totalSeconds: number) {
+  if (!initialDate) return new Date();
+  const result = new Date(initialDate);
+
+  const hours = totalSeconds / 60 / 60;
+  result.setHours(hours);
+
+  const minutes = (totalSeconds % (60 * 60)) / 60;
+  result.setMinutes(minutes);
+
+  result.setSeconds(0);
+  result.setMilliseconds(0);
+
+  return result;
 }
 
 function getTimeFromDate(date: Date) {
