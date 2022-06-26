@@ -1,11 +1,11 @@
 import React, { Dispatch, SetStateAction } from "react";
 import { Slider } from "@miblanchard/react-native-slider";
-import { View, Text } from "../../../../Themed";
-import { getTimeFromSeconds } from "../../../../../util/time";
+import { View, Text } from "../../../Themed";
+import { getTimeFromSeconds } from "../../../../util/time";
 
 import useDuration, { TOTAL_DURATION_STEPS } from "../../hooks/useDuration";
 
-import { Task } from "../../../../../types";
+import { Task } from "../../../../types";
 
 import styles from "./styles";
 import { ColorPropType } from "react-native";

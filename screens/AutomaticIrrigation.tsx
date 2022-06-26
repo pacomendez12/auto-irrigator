@@ -8,6 +8,7 @@ import TaskItem from "../components/TaskItem";
 import Alert from "../components/Alert";
 import EmptyState from "../components/EmptyState";
 import NewTaskModal from "../components/NewTaskModal";
+import EditTaskModal from "../components/EditTaskModal";
 
 import { Task } from "../types";
 import {
@@ -33,8 +34,8 @@ const mockTasks: Task[] = [
     schedule: {
       type: REPEAT_WEEK,
       occurrences: MONDAY | WENDNESDAY | FRIDAY,
-      startDate: 1633849259325,
-      endDate: 1633849259325,
+      startDate: 1656224045,
+      endDate: 1656224045,
     },
     enabled: true,
   },
@@ -45,8 +46,8 @@ const mockTasks: Task[] = [
     schedule: {
       type: REPEAT_BIWEEK,
       occurrences: TUESDAY | THURSDAY,
-      startDate: 1633849259325,
-      endDate: 1633849259325,
+      startDate: 1656224045,
+      endDate: 1656224045,
     },
     enabled: true,
   },
@@ -57,17 +58,18 @@ const mockTasks: Task[] = [
     schedule: {
       type: ONE_TIME_EVENT,
       occurrences: NONE,
-      startDate: 1633849259325,
-      endDate: 1633849259325,
+      startDate: 1656224045,
+      endDate: 1656224045,
     },
     enabled: true,
   },
 ];
 
 export default function TabTwoScreen() {
-  const [tasks, setTasks] = useState(cloneDeep([] || mockTasks));
+  const [tasks, setTasks] = useState(cloneDeep(/*[] ||*/ mockTasks));
   const currentTask = useRef<Task | null>(null);
   const [showNewTaskModal, setShowNewTaskModal] = useState(false);
+  const [showEditTaskModal, setShowEditTaskModal] = useState(false);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
 
   const toggleIsEnabled = (task: Task) => {
@@ -89,6 +91,11 @@ export default function TabTwoScreen() {
     setShowDeleteAlert(false);
   };
 
+  const onShowEditTask = (task: Task) => {
+    currentTask.current = task;
+    setShowEditTaskModal(true);
+  };
+
   const onDeleteTask = () => {
     setTasks((tasks: [Task]) =>
       tasks.filter((task) => task?.id !== currentTask.current?.id)
@@ -100,6 +107,15 @@ export default function TabTwoScreen() {
     setTasks((tasks: [Task]) => [...tasks, task]);
   };
 
+  const onEditTask = (task: Task | null, originalTask: Task | null) => {
+    if (!task || !originalTask) return;
+    setTasks((tasks: [Task]) => {
+      const idx = tasks.indexOf(originalTask);
+      tasks.splice(idx, 1, task);
+      return [...tasks];
+    });
+  };
+
   const renderItem = ({ item }: { item: Task }) => {
     return (
       <TaskItem
@@ -109,6 +125,7 @@ export default function TabTwoScreen() {
           marginLeft: 25,
         }}
         onShowDeleteAlert={onShowDeleteTask}
+        onShowEditTask={onShowEditTask}
       />
     );
   };
@@ -137,11 +154,24 @@ export default function TabTwoScreen() {
           setShowNewTaskModal(true);
         }}
       />
-      <NewTaskModal
-        showModal={showNewTaskModal}
-        onHide={() => setShowNewTaskModal(false)}
-        onAddTask={onAddTask}
-      />
+      {showNewTaskModal && (
+        <NewTaskModal
+          showModal={showNewTaskModal}
+          onHide={() => setShowNewTaskModal(false)}
+          onAddTask={onAddTask}
+        />
+      )}
+      {showEditTaskModal && (
+        <EditTaskModal
+          showModal={showEditTaskModal}
+          onHide={() => {
+            currentTask.current = null;
+            setShowEditTaskModal(false);
+          }}
+          onEditTask={onEditTask}
+          task={currentTask.current}
+        />
+      )}
       <Alert
         title="Eliminar"
         message="¿Quieres eliminar esta tarea?"

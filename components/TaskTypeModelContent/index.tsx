@@ -1,7 +1,7 @@
 import React from "react";
-import * as Constants from "../../../AppConstants";
+import * as Constants from "../../AppConstants";
 
-import { Task } from "../../../types";
+import { Task } from "../../types";
 
 import OneTimeEvent from "./components/OneTimeEvent";
 import MultipleWeekEvent from "./components/MultipleWeeksEvent";

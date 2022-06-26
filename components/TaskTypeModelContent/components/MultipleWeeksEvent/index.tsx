@@ -1,13 +1,13 @@
 import React, { Dispatch, SetStateAction } from "react";
 import { SafeAreaView, ScrollView } from "react-native";
-import DatePickerTextInput from "../../../../DatePickerTextInput";
-import TimePickerTextInput from "../../../../TimePickerTextInput";
+import DatePickerTextInput from "../../../DatePickerTextInput";
+import TimePickerTextInput from "../../../TimePickerTextInput";
 import Duration from "../Duration";
 
-import { View, Text } from "../../../../Themed";
-import { Task } from "../../../../../types";
+import { View, Text } from "../../../Themed";
+import { Task } from "../../../../types";
 
-import DaysIndicator from "../../../../TaskItem/DaysIndicator";
+import DaysIndicator from "../../../TaskItem/DaysIndicator";
 
 export default function MultipleWeekEvent({
   task,

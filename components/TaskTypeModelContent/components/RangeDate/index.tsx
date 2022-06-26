@@ -1,10 +1,10 @@
 import React, { useState, useMemo } from "react";
 import { Calendar } from "react-native-calendars";
 
-import { View } from "../../../../Themed";
+import { View } from "../../../Themed";
 
-import { Task } from "../../../../../types";
-import { getStringDate } from "../../../../../util/time";
+import { Task } from "../../../../types";
+import { getStringDate } from "../../../../util/time";
 import { DateData } from "react-native-calendars/src/types";
 
 const SELECTED_NONE = 0;
@@ -90,8 +90,6 @@ export default function OneTimeEvent({ task, setTask }: { task: Task; setTask: (
 
 function generateMarkedDays(startDate: Date, endDate: Date) {
     const result: Record<string, any> = {};
-
-    console.log(startDate);
 
     let current = startDate;
     while (current < endDate) {

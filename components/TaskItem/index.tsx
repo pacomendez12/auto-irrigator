@@ -16,17 +16,20 @@ export default function TaskItem({
   containerStyle,
   toggleSwitch,
   onShowDeleteAlert,
+  onShowEditTask,
 }: {
   task: Task;
   containerStyle: StyleProp<ViewStyle>;
   toggleSwitch: (task: Task) => void;
   onShowDeleteAlert: (task: Task) => void;
+  onShowEditTask: (task: Task) => void;
 }) {
   return (
     <Pressable
       onLongPress={() => {
         onShowDeleteAlert(task);
       }}
+      onPress={() => onShowEditTask(task)}
     >
       <View style={[styles.container, containerStyle]}>
         <View style={styles.containerLeft}>
@@ -38,7 +41,11 @@ export default function TaskItem({
           </View>
 
           <View style={styles.daysContainer}>
-            <DaysIndicator occurrences={task?.schedule?.occurrences} size={20} isEditable={false} />
+            <DaysIndicator
+              occurrences={task?.schedule?.occurrences}
+              size={20}
+              isEditable={false}
+            />
           </View>
         </View>
         <View style={styles.containerRight}>

@@ -1,10 +1,10 @@
 import React, { Dispatch, SetStateAction } from "react";
-import DatePickerTextInput from "../../../../DatePickerTextInput";
-import TimePickerTextInput from "../../../../TimePickerTextInput";
+import DatePickerTextInput from "../../../DatePickerTextInput";
+import TimePickerTextInput from "../../../TimePickerTextInput";
 import Duration from "../Duration";
 
-import { View } from "../../../../Themed";
-import { Task } from "../../../../../types";
+import { View } from "../../../Themed";
+import { Task } from "../../../../types";
 
 export default function OneTimeEvent({
   task,

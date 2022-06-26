@@ -18,30 +18,38 @@ const options = [
   { label: "Mensual", value: Constants.REPEAT_MONTH },
 ];
 
-export default function NewTaskModal(props: {
+export default function EditTaskModal(props: {
   showModal: boolean;
   onHide: () => void;
-  onAddTask: (task: Task) => void;
+  task: Task | null;
+  onEditTask: (newtask: Task | null, originalTask: Task | null) => void;
 }) {
   const actionSheetRef = useRef<ActionSheet>(null);
-  const [task, setTask] = useState<Task>(createEmptyTask());
+  const [currentTask, setCurrentTask] = useState<Task | null>(props.task);
 
   useEffect(() => {
-    if (props?.showModal) setTask(createEmptyTask());
+    if (props?.showModal) setCurrentTask(props?.task);
     if (actionSheetRef.current)
       actionSheetRef.current.setModalVisible(props?.showModal);
-  }, [props?.showModal]);
+  }, [props?.showModal, props?.task]);
+
+  if (!currentTask || !props.task) {
+    return null;
+  }
 
   const onAccept = () => {
     props?.onHide();
-    props?.onAddTask(task);
+    props?.onEditTask(currentTask, props?.task);
   };
 
   const setTaskType = (type: number) => {
-    setTask((oldTask: Task) => ({
-      ...oldTask,
-      schedule: { ...oldTask.schedule, type },
-    }));
+    setCurrentTask((oldTask: Task | null) => {
+      if (!oldTask) return null;
+      return {
+        ...oldTask,
+        schedule: { ...oldTask.schedule, type },
+      };
+    });
   };
 
   return (
@@ -57,64 +65,24 @@ export default function NewTaskModal(props: {
     >
       <View style={styles.container}>
         <View style={styles.taskTypeSelector}>
-          {/* <Text style={styles.label}>Tipo de tarea</Text> */}
           <View style={styles.switchSelectorContainer}>
             <SwitchSelector
               options={options}
-              initial={task?.schedule?.type ?? Constants.ONE_TIME_EVENT}
+              initial={currentTask?.schedule?.type ?? Constants.ONE_TIME_EVENT}
               buttonColor="#2f95dc"
               onPress={(value: number) => setTaskType(value)}
             />
           </View>
         </View>
-
         <View style={{ alignSelf: "stretch" }}>
           <TaskTypeContent
-            taskType={task?.schedule?.type ?? Constants.ONE_TIME_EVENT}
-            task={task}
-            setTask={setTask}
+            taskType={currentTask?.schedule?.type ?? Constants.ONE_TIME_EVENT}
+            task={currentTask}
+            setTask={setCurrentTask}
             actionSheetRef={actionSheetRef}
           />
         </View>
       </View>
     </ActionSheet>
   );
-}
-
-function createEmptyTask(): Task {
-  const now = new Date();
-  const nowWithoutSeconds = new Date(
-    now.getFullYear(),
-    now.getMonth(),
-    now.getDate(),
-    now.getHours(),
-    now.getUTCMinutes(),
-    0
-  );
-
-  const nowUnix = Math.floor(nowWithoutSeconds.getTime() / 1000);
-
-  const todayStart = new Date(
-    now.getFullYear(),
-    now.getMonth(),
-    now.getDate(),
-    0,
-    0,
-    0
-  );
-
-  const time = Math.floor((now.getTime() - todayStart.getTime()) / 1000);
-
-  return {
-    id: nowUnix - Math.floor((Math.random() * nowUnix) / 2),
-    time,
-    duration: 60,
-    schedule: {
-      type: Constants.ONE_TIME_EVENT,
-      occurrences: 0,
-      startDate: nowUnix,
-      endDate: nowUnix,
-    },
-    enabled: true,
-  };
 }
