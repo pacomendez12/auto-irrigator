@@ -30,7 +30,7 @@ const mockTasks: Task[] = [
   {
     id: 1,
     time: 1480,
-    duration: 0,
+    duration: 60,
     schedule: {
       type: REPEAT_WEEK,
       occurrences: MONDAY | WENDNESDAY | FRIDAY,
@@ -42,7 +42,7 @@ const mockTasks: Task[] = [
   {
     id: 2,
     time: 480,
-    duration: 0,
+    duration: 60,
     schedule: {
       type: REPEAT_BIWEEK,
       occurrences: TUESDAY | THURSDAY,
@@ -54,7 +54,7 @@ const mockTasks: Task[] = [
   {
     id: 3,
     time: 72020,
-    duration: 0,
+    duration: 60,
     schedule: {
       type: ONE_TIME_EVENT,
       occurrences: NONE,
@@ -207,5 +207,6 @@ const styles = StyleSheet.create({
   },
   listContentContainer: {
     flexGrow: 1,
+    paddingBottom: 85,
   },
 });

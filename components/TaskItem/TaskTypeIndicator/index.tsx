@@ -2,26 +2,56 @@ import React from "react";
 import { StyleSheet } from "react-native";
 import { Chip } from "react-native-paper";
 
-import { Text, View } from "../../Themed";
+import { View } from "../../Themed";
 
-const ONE_TIME_EVENT = 0x0;
-const REPEAT_WEEK = 0x1;
-const REPEAT_BIWEEK = 0x2;
-const REPEAT_MONTH = 0x3;
+import {
+  ONE_TIME_EVENT,
+  REPEAT_WEEK,
+  REPEAT_BIWEEK,
+  REPEAT_MONTH,
+} from "../../../AppConstants";
 
 export default function TaskTypeIndicator({ type }: { type: number }) {
   const oneTimeEvent = () => {
-    return <Chip>Única vez</Chip>;
+    return (
+      <Chip
+        style={{ backgroundColor: "#87decdff" }}
+        textStyle={styles.chipText}
+      >
+        Única vez
+      </Chip>
+    );
   };
 
   const weeklyEvent = () => {
-    return <Chip>Semanal</Chip>;
+    return (
+      <Chip
+        style={{ backgroundColor: "#87decdff" }}
+        textStyle={styles.chipText}
+      >
+        Semanal
+      </Chip>
+    );
   };
   const biWeeklyEvent = () => {
-    return <Chip>Cada 2 semanas</Chip>;
+    return (
+      <Chip
+        style={{ backgroundColor: "#87decdff" }}
+        textStyle={styles.chipText}
+      >
+        Quincenal
+      </Chip>
+    );
   };
   const MontlyEvent = () => {
-    return <Chip>Mensual</Chip>;
+    return (
+      <Chip
+        style={{ backgroundColor: "#87decdff" }}
+        textStyle={styles.chipText}
+      >
+        Mensual
+      </Chip>
+    );
   };
 
   const renderIndicator = () => {
@@ -48,7 +78,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginHorizontal: 25,
+    marginLeft: 25,
     backgroundColor: "transparent",
+  },
+  chipText: {
+    color: "#217867ff",
   },
 });
