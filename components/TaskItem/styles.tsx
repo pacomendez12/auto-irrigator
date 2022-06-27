@@ -22,9 +22,17 @@ export default StyleSheet.create({
     backgroundColor: "transparent",
   },
   durationText: {
-    color: "gray",
+    color: "green",
     maxWidth: 80,
     textAlign: "center",
+    borderBottomColor: "green",
+    borderBottomWidth: 0.5,
+  },
+  dates: {
+    width: 120,
+    color: "gray",
+    textAlign: "center",
+    marginVertical: 10,
   },
   containerRight: {
     flex: 1,
@@ -34,6 +42,10 @@ export default StyleSheet.create({
     paddingRight: 15,
     minHeight: 60,
     justifyContent: "flex-end",
+    backgroundColor: "transparent",
+  },
+  timeContainer: {
+    alignItems: "center",
     backgroundColor: "transparent",
   },
   hourText: {

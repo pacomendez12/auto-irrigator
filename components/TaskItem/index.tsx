@@ -7,18 +7,18 @@ import { getTimeFromSecondsShort } from "../../util/time";
 import Pressable from "../Pressable";
 import { Task } from "../../types";
 import { getTimeFromSeconds } from "../../util/time";
+import Moment from "moment";
+import "moment/locale/es-mx";
 
 import TypeIndicator from "./TaskTypeIndicator";
 import DaysIndicator from "./DaysIndicator";
 import styles from "./styles";
-import {
-  ONE_TIME_EVENT,
-  REPEAT_WEEK,
-  REPEAT_BIWEEK,
-  REPEAT_MONTH,
-} from "../../AppConstants";
+import { ONE_TIME_EVENT } from "../../AppConstants";
+import moment from "moment";
 
 const weeksByType = [0, 1, 2, 4];
+
+moment().locale("es-MX");
 
 const dateOptions = {};
 
@@ -70,13 +70,11 @@ export default function TaskItem({
           )}
         </View>
         <View style={styles.containerRight}>
-          <View>
+          <View style={styles.timeContainer}>
             <Text style={styles.durationText}>
               {getTimeFromSeconds(task?.duration)}
             </Text>
-            <Text>
-              {new Date(task?.schedule?.startDate).toLocaleString("ko-KR")}
-            </Text>
+            <Text style={styles.dates}>{getDatesString(task)}</Text>
           </View>
           <Switch
             value={task?.enabled}
@@ -90,4 +88,19 @@ export default function TaskItem({
       </View>
     </Pressable>
   );
+}
+
+function getDatesString(task: Task) {
+  const { startDate, endDate } = task?.schedule;
+  const startDateString = moment(new Date((startDate ?? 0) * 1000)).format(
+    "D [de] MMM YY"
+  );
+  const endDateString = moment(new Date((endDate ?? 0) * 1000)).format(
+    "D [de] MMM YY"
+  );
+  const dateString =
+    startDate === endDate
+      ? startDateString
+      : `Del\n${startDateString}\nal\n${endDateString}`;
+  return dateString;
 }
