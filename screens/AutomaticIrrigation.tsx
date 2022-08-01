@@ -65,7 +65,7 @@ const mockTasks: Task[] = [
   },
 ];
 
-export default function TabTwoScreen() {
+export default function AutomaticIrrigation() {
   const [tasks, setTasks] = useState(cloneDeep(/*[] ||*/ mockTasks));
   const currentTask = useRef<Task | null>(null);
   const [showNewTaskModal, setShowNewTaskModal] = useState(false);

@@ -3,7 +3,6 @@ import {
   StyleSheet,
   Image,
   TextInput,
-  Button,
   TouchableOpacity,
 } from "react-native";
 import * as Progress from "react-native-progress";

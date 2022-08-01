@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import { StyleSheet, SafeAreaView, ScrollView } from "react-native";
 
 import ValveCard from "../components/ValveCard";
-import Potentiometer from "../components/Potentiometer";
-import { Text, View } from "../components/Themed";
+import DeviceFinder from "../components/DeviceFinder";
+import { BluetoothContext } from "../BluetoothState";
 
-export default function TabOneScreen() {
+export default function ManualIrrigation() {
   const [devices, setDevices] = useState(["Válvula 1", "Válvula 2"]);
 
   const setDeviceName = (deviceId: number, name: string) => {
@@ -16,21 +16,37 @@ export default function TabOneScreen() {
     });
   };
 
+  const renderDeviceFinder = (state: any) => {
+    return <DeviceFinder isBluetoothEnabled={state?.isBluetoothEnabled} />
+  }
+
+  const renderManualScreen = (state: any) => {
+    return <ScrollView style={styles.scrollView} bounces={false}>
+      {devices.map((device: string, idx: number) => {
+        return (
+          <ValveCard
+            key={idx}
+            id={idx}
+            deviceName={device}
+            setDeviceName={setDeviceName}
+          />
+        );
+      })}
+    </ScrollView>;
+  }
+
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.scrollView} bounces={false}>
-        {devices.map((device: string, idx: number) => {
-          return (
-            <ValveCard
-              key={idx}
-              id={idx}
-              deviceName={device}
-              setDeviceName={setDeviceName}
-            />
-          );
-        })}
-      </ScrollView>
-    </SafeAreaView>
+    <BluetoothContext.Consumer>
+      {(state) => {
+        const connected = state?.connectedDevice !== null;
+        return <SafeAreaView style={styles.container}>
+          <>
+            {connected && renderManualScreen(state)}
+            {!connected && renderDeviceFinder(state)}
+          </>
+        </SafeAreaView>
+      }}
+    </BluetoothContext.Consumer>
   );
 }
 

@@ -36,7 +36,7 @@ export default function BottomTabNavigator() {
             <TabBarIcon name="ios-cog" color={color} />
           ),
           headerTitle: "Manual",
-          headerRight: () => (<Spinner animated={true} />)
+          // headerRight: () => (<Spinner animated={true} />)
         }}
       />
       <BottomTab.Screen
@@ -63,7 +63,7 @@ function TabBarIcon(props: { name: string; color: string }) {
 // https://reactnavigation.org/docs/tab-based-navigation#a-stack-navigator-for-each-tab
 const Manual = createStackNavigator<TabOneParamList>();
 
-function ManualIrrigationNavigator() {
+function ManualIrrigationNavigator(state: any) {
   return (
     <Manual.Navigator>
       <Manual.Screen
@@ -77,7 +77,7 @@ function ManualIrrigationNavigator() {
 
 const Automatic = createStackNavigator<TabTwoParamList>();
 
-function AutomaticIrrigationNavigator() {
+function AutomaticIrrigationNavigator(state: any) {
   return (
     <Automatic.Navigator>
       <Automatic.Screen
