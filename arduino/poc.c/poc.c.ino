@@ -76,7 +76,7 @@ void setup() {
     digitalWrite(i, LOW);
   }
 
-  //rtc.adjust(DateTime(__DATE__, __TIME__));
+  rtc.adjust(DateTime(__DATE__, __TIME__));
 }
 
 void loop() {
@@ -110,10 +110,22 @@ void loop() {
 
   #ifndef AT_CONFIG
 
-
-  if (BT.available()) {
+  int availableBytes = BT.available();
+  
+  if (availableBytes) {
+    //Serial.println(availableBytes);
     logged = false;
-    btData = BT.read();
+    String data = BT.readString();
+    Serial.println(data);
+    /*char d = BT.read();
+    while (d != -1) {
+      Serial.print(d);
+      d = BT.read();
+    }
+    Serial.print('\n');*/
+    //btData = BT.read();
+
+    
     Serial.println(btData);
     if (btData == '1') {
       digitalWrite(VALVE_START, HIGH);

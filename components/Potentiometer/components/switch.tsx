@@ -15,8 +15,8 @@ export default function Switch({
   setIsOn: (value: any) => void;
 }) {
   const onPress = useCallback(() => {
-    setIsOn((isOn: boolean) => !isOn);
-  }, []);
+    setIsOn(!isOn);
+  }, [setIsOn]);
 
   return (
     <TouchableWithoutFeedback onPress={onPress}>
