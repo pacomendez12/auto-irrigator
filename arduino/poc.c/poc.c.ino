@@ -1,4 +1,4 @@
-
+#include <ArduinoJson.h>
 #include <Wire.h>
 #include <RTClib.h>
 #include <SoftwareSerial.h>
@@ -24,6 +24,16 @@
 struct Irrigation{
   char current_valve = 0;
   int total_time = 0;
+};
+
+class BTEvent {
+  public:
+
+  BTEvent(DynamicJsonDocument djd) : payload(djd) {}
+  
+  byte action;
+  byte device;
+  DynamicJsonDocument payload;
 };
 
 // Globals
@@ -79,11 +89,44 @@ void setup() {
   rtc.adjust(DateTime(__DATE__, __TIME__));
 }
 
+String readMessage() {
+    String message = BT.readString();
+    int messageBytes = message.toInt();
+    int startMessageIdx = message.indexOf('{');
+    String msg = startMessageIdx == -1 ? "" : message.substring(startMessageIdx);
+
+    messageBytes -= msg.length();
+    
+    while (messageBytes > 0 && BT.available()) {
+      Serial.println("in while");
+      String data = BT.readString();
+      Serial.println(data);
+      msg = msg + data;
+      messageBytes -= 20;
+    }
+
+    return msg;
+}
+
+BTEvent parseMessage(String msg) {
+  DynamicJsonDocument document(256);
+  deserializeJson(document, msg);
+
+  BTEvent event(document);
+
+  event.action = document["action"];
+  event.device = document["deviceId"];
+
+  return event;
+}
+
+
+
 void loop() {
 
   //handleBTCommand();
   
-  DateTime fecha = rtc.now();
+  //DateTime fecha = rtc.now();
 
   /*Serial.print(fecha.day());
   Serial.print("/");
@@ -113,30 +156,15 @@ void loop() {
   int availableBytes = BT.available();
   
   if (availableBytes) {
-    //Serial.println(availableBytes);
-    logged = false;
-    String data = BT.readString();
-    Serial.println(data);
-    /*char d = BT.read();
-    while (d != -1) {
-      Serial.print(d);
-      d = BT.read();
-    }
-    Serial.print('\n');*/
-    //btData = BT.read();
+    String msg = readMessage();
 
-    
-    Serial.println(btData);
-    if (btData == '1') {
-      digitalWrite(VALVE_START, HIGH);
-    } else if (btData == '2') {
-      digitalWrite(VALVE_START, LOW);
-    }
-    if (btData == '3') {
-      digitalWrite(VALVE_START + 1, HIGH);
-    } else if (btData == '4') {
-      digitalWrite(VALVE_START + 1, LOW);
-    }
+    Serial.println(msg);
+
+    BTEvent event = parseMessage(msg);
+    int value = event.action == 1 ? HIGH : LOW;
+
+    digitalWrite(event.device + VALVE_START, value);
+
   }
   #endif
   

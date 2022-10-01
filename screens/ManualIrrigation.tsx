@@ -1,6 +1,6 @@
 import React, { useState, useRef, useCallback } from "react";
 import { StyleSheet, SafeAreaView, ScrollView } from "react-native";
-import { Device } from "react-native-ble-plx";
+import { Characteristic, Device } from "react-native-ble-plx";
 import { Buffer } from "buffer";
 
 import ValveCard from "../components/ValveCard";
@@ -9,6 +9,8 @@ import { BluetoothContext } from "../BluetoothState";
 import { createStartMessage, createStopMessage } from "../Serialize";
 
 const CUSTOM_SERVICE_UUID = "0000ffe0-0000-1000-8000-00805f9b34fb";
+
+const MESSAGE_CHUNK_SIZE = 20;
 
 interface Valve {
   name: string;
@@ -41,56 +43,31 @@ export default function ManualIrrigation() {
     );
   };
 
-  const setValveState = useCallback(async (state: Valve, idx: number) => {
-    const services = await device.current?.services();
-    console.log(services?.map((c) => c.uuid));
-
-    const characteristics = await device.current?.characteristicsForService(
-      CUSTOM_SERVICE_UUID
-    );
-    console.log(characteristics);
-
-    const characteristic = characteristics[0];
-
-    if (state.isOn) {
-      const message = createStartMessage(idx, state.irrigationTime);
-      console.log(message);
-
-      console.log(Buffer.from(message, "utf-8").toString("base64"));
-
-      characteristic.writeWithoutResponse(
-        Buffer.from(message, "utf-8").toString("base64")
+  const setValveState = async (state: Valve, idx: number) => {
+    const currentValve = valves[idx];
+    if (currentValve.isOn !== state.isOn) {
+      const characteristics = await device.current?.characteristicsForService(
+        CUSTOM_SERVICE_UUID
       );
-    } else {
-      const message = createStopMessage(idx);
-      console.log(message);
 
-      console.log(Buffer.from(message, "utf-8").toString("base64"));
-      characteristic.writeWithoutResponse(
-        Buffer.from(message, "utf-8").toString("base64")
-      );
+      const characteristic = characteristics?.[0] ?? null;
+
+      if (characteristic) {
+        if (state.isOn) {
+          const message = createStartMessage(idx, state.irrigationTime);
+          sendMessage(characteristic, message);
+        } else {
+          const message = createStopMessage(idx);
+          sendMessage(characteristic, message);
+        }
+      }
     }
-
-    /*if (idx === 0) {
-      const value = state.isOn ? "1" : "2";
-      console.log(Buffer.from(value, "utf-8").toString("base64"));
-      characteristic.writeWithoutResponse(
-        Buffer.from(value, "utf-8").toString("base64")
-      );
-    } else if (idx === 1) {
-      const value = state.isOn ? "3" : "4";
-      console.log(Buffer.from(value, "utf-8").toString("base64"));
-
-      characteristic.writeWithoutResponse(
-        Buffer.from(value, "utf-8").toString("base64")
-      );
-    }*/
 
     setValves((valves: Array<Valve>) => {
       valves[idx] = { ...state };
       return [...valves];
     });
-  }, []);
+  };
 
   const renderManualScreen = (BTstate) => {
     device.current = BTstate.connectedDevice;
@@ -126,6 +103,30 @@ export default function ManualIrrigation() {
       }}
     </BluetoothContext.Consumer>
   );
+}
+
+function sendMessage(characteristic: Characteristic, message: String) {
+  const bufferSize = message.length;
+  const bufferSizeMessage = Buffer.from(String(bufferSize), "utf-8").toString(
+    "base64"
+  );
+
+  characteristic.writeWithoutResponse(bufferSizeMessage);
+
+  let i = 0;
+  for (let i = 0; i < Math.ceil(bufferSize / MESSAGE_CHUNK_SIZE); i++) {
+    const start = i * MESSAGE_CHUNK_SIZE;
+    const end =
+      i * MESSAGE_CHUNK_SIZE <= bufferSize
+        ? (i + 1) * MESSAGE_CHUNK_SIZE
+        : bufferSize;
+
+    const subMsg = message.substring(start, end);
+
+    characteristic.writeWithoutResponse(
+      Buffer.from(String(subMsg), "utf-8").toString("base64")
+    );
+  }
 }
 
 const styles = StyleSheet.create({
