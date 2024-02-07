@@ -31,6 +31,7 @@ export default StyleSheet.create({
     padding: 5,
     alignItems: "center",
     alignSelf: "stretch",
+    backgroundColor: "#ececec"
   },
   homeScreenFilename: {
     marginVertical: 7,

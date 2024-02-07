@@ -120,16 +120,18 @@ export default function ValveCard({
             flexGrow: 0.3,
             flexDirection: "row",
             justifyContent: "center",
+            backgroundColor: "#ececec"
           }}
         >
           <View
             style={{
               width: 100,
               height: 100,
-              borderRadius: 100 / 2,
+              borderRadius: 10,
               overflow: "hidden",
               justifyContent: "center",
               alignItems: "center",
+              backgroundColor: "#ececec"
             }}
           >
             {valve?.isOn ? (
@@ -162,6 +164,7 @@ export default function ValveCard({
             flexGrow: 1,
             justifyContent: "center",
             alignItems: "center",
+            backgroundColor: "#ececec"
           }}
         >
           <Potentiometer

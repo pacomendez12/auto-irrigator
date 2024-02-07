@@ -44,11 +44,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     height: CONTAINER_SIZE,
     width: CONTAINER_SIZE,
+    backgroundColor: "#ececec"
   },
   knobContainer: {
     position: "absolute",
     width: COMPONENT_SIZE,
     height: COMPONENT_SIZE,
-    backgroundColor: "white",
+    backgroundColor: "#ececec"
   },
 });

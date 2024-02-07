@@ -1,16 +1,14 @@
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState, useRef, useCallback, useEffect, useContext } from "react";
 import { StyleSheet, SafeAreaView, ScrollView } from "react-native";
-import { Characteristic, Device } from "react-native-ble-plx";
-import { Buffer } from "buffer";
+import { Device } from "react-native-ble-plx";
 
 import ValveCard from "../components/ValveCard";
 import DeviceFinder from "../components/DeviceFinder";
 import { BluetoothContext } from "../BluetoothState";
-import { createStartMessage, createStopMessage } from "../Serialize";
+import { createSetDateMessage, createStartMessage, createStopMessage } from "../Serialize";
+import { sendMessage } from "../MessageSender";
 
 const CUSTOM_SERVICE_UUID = "0000ffe0-0000-1000-8000-00805f9b34fb";
-
-const MESSAGE_CHUNK_SIZE = 20;
 
 interface Valve {
   name: string;
@@ -20,8 +18,8 @@ interface Valve {
 
 export default function ManualIrrigation() {
   const [valves, setValves] = useState<Array<Valve>>([
-    { name: "Válvula 1", isOn: false, irrigationTime: 0 },
-    { name: "Válvula 2", isOn: false, irrigationTime: 0 },
+    { name: "Válvula 1", isOn: false, irrigationTime: 60 },
+    { name: "Válvula 2", isOn: false, irrigationTime: 60 },
   ]);
   const device = useRef<Device>(null);
 
@@ -32,6 +30,27 @@ export default function ManualIrrigation() {
       return copy;
     });
   };*/
+
+  const { connectedDevice } = useContext(BluetoothContext)
+
+  useEffect(() => {
+    if (connectedDevice) {
+      doUpdateDateInDevice();
+    }
+
+
+    async function doUpdateDateInDevice() {
+      const characteristics = await device.current?.characteristicsForService(
+        CUSTOM_SERVICE_UUID
+      );
+
+      const characteristic = characteristics?.[0] ?? null;
+      if (characteristic) {
+        const message = createSetDateMessage();
+        sendMessage(characteristic, message);
+      }
+    }
+  }, [connectedDevice]);
 
   const renderDeviceFinder = (state: any) => {
     return (
@@ -95,38 +114,13 @@ export default function ManualIrrigation() {
         return (
           <SafeAreaView style={styles.container}>
             <>
-              {connected && renderManualScreen(state)}
-              {!connected && renderDeviceFinder(state)}
+              {connected ? renderManualScreen(state) : renderDeviceFinder(state)}
             </>
           </SafeAreaView>
         );
       }}
     </BluetoothContext.Consumer>
   );
-}
-
-function sendMessage(characteristic: Characteristic, message: String) {
-  const bufferSize = message.length;
-  const bufferSizeMessage = Buffer.from(String(bufferSize), "utf-8").toString(
-    "base64"
-  );
-
-  characteristic.writeWithoutResponse(bufferSizeMessage);
-
-  let i = 0;
-  for (let i = 0; i < Math.ceil(bufferSize / MESSAGE_CHUNK_SIZE); i++) {
-    const start = i * MESSAGE_CHUNK_SIZE;
-    const end =
-      i * MESSAGE_CHUNK_SIZE <= bufferSize
-        ? (i + 1) * MESSAGE_CHUNK_SIZE
-        : bufferSize;
-
-    const subMsg = message.substring(start, end);
-
-    characteristic.writeWithoutResponse(
-      Buffer.from(String(subMsg), "utf-8").toString("base64")
-    );
-  }
 }
 
 const styles = StyleSheet.create({

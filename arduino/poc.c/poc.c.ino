@@ -2,63 +2,65 @@
 #include <Wire.h>
 #include <RTClib.h>
 #include <SoftwareSerial.h>
+#include "structs.h"
+#include "BTEvent.h"
 
-#define VALVE_START 2
-#define VALVES_NUMBER 2
-#define VALVE_END VALVE_START + VALVES_NUMBER - 1
-
-// States
-#define STOP_STATE 0
-#define MANUAL_START_SATE 1
-#define AUTO_START_STATE 2
-
-// Commands
-#define STOP 0
-#define M_STR 1
-#define A_STR 2
-#define SET_CONFIG 3
-#define SET_DATE 4
-
+#define MAX_CONFIGURATIONS 10
 //#define AT_CONFIG 1
+//#define SET_TIME_FROM_PC
 
-struct Irrigation{
-  char current_valve = 0;
-  int total_time = 0;
-};
-
-class BTEvent {
-  public:
-
-  BTEvent(DynamicJsonDocument djd) : payload(djd) {}
-  
-  byte action;
-  byte device;
-  DynamicJsonDocument payload;
-};
 
 // Globals
 RTC_DS3231 rtc;
 SoftwareSerial BT(10, 11);
-char btData = 0;
-bool logged = false;
-char state = STOP;
-Irrigation irrigation;
+DeviceIrrigation * irrigation[DEVICES_TOTAL];
+Task allTasks[MAX_CONFIGURATIONS];
 
-void clearCurrentIrrigation() {
-  irrigation.current_valve = 0;
-  irrigation.total_time = 0;
+
+void handleDeviceTimeout() {
+  for(DeviceIrrigation *dev : irrigation) {
+    if (dev->state == MANUAL_START || dev->state == AUTO_START_STATE) {
+      uint32_t currentUnixSeconds = rtc.now().unixtime();
+      if (currentUnixSeconds >= dev->endsAt) {
+        stopDevice(dev->deviceId);
+      } else {
+        Serial.println("Still irrigating pending " + String(dev->endsAt - currentUnixSeconds) + " seconds for device " + String(dev->deviceId));
+      }
+    }
+  }
 }
 
-void setCommand(char command, void * param) {
-  switch(command) {
+void stopDevice(byte deviceId) {
+  Serial.println("Stopping device " + String(deviceId));
+  irrigation[deviceId]->reset();
+  digitalWrite(deviceId + DEVICE_START_PIN, LOW);
+}
+
+void executeCommand(BTEvent &event) {
+  DeviceIrrigation *currentDevice = irrigation[event.getDeviceId()];
+  IBasePayload * payload = event.getPayload();
+  
+  switch(event.getAction()) {
     case STOP:
-      state = STOP_STATE;
-      clearCurrentIrrigation();
+      stopDevice(event.getDeviceId());
       break;
-    case M_STR:
-      state = MANUAL_START_SATE;
+    case MANUAL_START:{
+      DateTime currentDate = rtc.now();
       
-      memcpy(&irrigation, param, sizeof(Irrigation));
+      currentDevice->deviceId = event.getDeviceId();
+      currentDevice->state = MANUAL_START;      
+      currentDevice->endsAt = currentDate.unixtime() + payload->getDuration();
+      
+      digitalWrite(event.getDeviceId() + DEVICE_START_PIN, HIGH);
+      break;
+    }
+    case SET_DATE: {
+      long currentDateSeconds = payload->getCurrentDate();
+      //Serial.print(currentDateSeconds);
+      rtc.adjust(DateTime(currentDateSeconds));
+      break;
+    }
+    default:
       break;
   }
 }
@@ -81,12 +83,18 @@ void setup() {
 
   BT.begin(9600);
 
-  for (int i = VALVE_START; i <= VALVE_END; i++) {
+  for (int i = DEVICE_START_PIN; i <= LAST_DEVICE_PIN; i++) {
     pinMode(i, OUTPUT);
     digitalWrite(i, LOW);
   }
 
+  for (int i = 0; i < DEVICES_TOTAL; i++) {
+    irrigation[i] = new DeviceIrrigation(i);
+  }
+
+  #ifdef SET_TIME_FROM_PC
   rtc.adjust(DateTime(__DATE__, __TIME__));
+  #endif
 }
 
 String readMessage() {
@@ -109,13 +117,12 @@ String readMessage() {
 }
 
 BTEvent parseMessage(String msg) {
-  DynamicJsonDocument document(256);
+  JsonDocument document;
   deserializeJson(document, msg);
 
   BTEvent event(document);
 
-  event.action = document["action"];
-  event.device = document["deviceId"];
+  Serial.println((long)document["payload"]["currentDate"]);
 
   return event;
 }
@@ -123,12 +130,13 @@ BTEvent parseMessage(String msg) {
 
 
 void loop() {
+  handleDeviceTimeout();
 
   //handleBTCommand();
   
-  //DateTime fecha = rtc.now();
+  DateTime fecha = rtc.now();
 
-  /*Serial.print(fecha.day());
+  Serial.print(fecha.day());
   Serial.print("/");
   Serial.print(fecha.month());
   Serial.print("/");
@@ -138,7 +146,7 @@ void loop() {
   Serial.print(":");
   Serial.print(fecha.minute());
   Serial.print(":");
-  Serial.println(fecha.second());*/
+  Serial.println(fecha.second());
 
 
   /*#ifdef AT_CONFIG
@@ -152,21 +160,22 @@ void loop() {
   #endif*/
 
   #ifndef AT_CONFIG
-
-  int availableBytes = BT.available();
   
-  if (availableBytes) {
+  if (BT.available()) {
     String msg = readMessage();
 
     Serial.println(msg);
+    Serial.println(msg);
 
     BTEvent event = parseMessage(msg);
-    int value = event.action == 1 ? HIGH : LOW;
+    /*int value = event.getAction() == 1 ? HIGH : LOW;
 
-    digitalWrite(event.device + VALVE_START, value);
+    digitalWrite(event.getDeviceId() + DEVICE_START_PIN, value);*/
+
+    executeCommand(event);
 
   }
   #endif
   
-  //delay(1000);
+  delay(1000);
 }

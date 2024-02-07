@@ -10,6 +10,8 @@ buildscript {
         targetSdkVersion = Integer.parseInt(findProperty('android.targetSdkVersion') ?: '31')
         if (findProperty('android.kotlinVersion')) {
             kotlinVersion = findProperty('android.kotlinVersion')
+        } else {
+            kotlinVersion = "1.5.31"
         }
         frescoVersion = findProperty('expo.frescoVersion') ?: '2.5.0'
 

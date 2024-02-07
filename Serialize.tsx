@@ -1,11 +1,11 @@
 enum Action {
   STOP,
-  START,
-  SET_TASKS,
-  GET_TASKS,
+  MANUAL_START,
   SET_DATE,
-  GET_DATE,
-  CONFIG_DEVICE,
+  ADD_TASK,
+  DELETE_TASK,
+  CHANGE_TASK,
+  SET_DEVICE_NAME,
 }
 
 interface Message {
@@ -16,7 +16,7 @@ interface Message {
 
 function createMessage(
   action: Action,
-  deviceId: number | null,
+  deviceId: number | null | undefined,
   payload: any | null
 ): string {
   const message = {
@@ -29,7 +29,7 @@ function createMessage(
 }
 
 export function createStartMessage(deviceId: number, duration: number) {
-  return createMessage(Action.START, deviceId, { duration });
+  return createMessage(Action.MANUAL_START, deviceId, { duration });
 }
 
 export function createStopMessage(deviceId: number) {
@@ -37,9 +37,12 @@ export function createStopMessage(deviceId: number) {
 }
 
 export function createSetDateMessage() {
-  return createMessage(Action.SET_DATE, null, new Date().getTime() / 1000);
+  const date = new Date();
+  const secondsInTimeZone = Math.floor(date.getTime() / 1000);
+  const utcSeconds = secondsInTimeZone - (date.getTimezoneOffset() * 60);
+  return createMessage(Action.SET_DATE, undefined, { currentDate: utcSeconds });
 }
 
-export function createGetDateMessage() {
+/*export function createGetDateMessage() {
   return createMessage(Action.GET_DATE, null, null);
-}
+}*/

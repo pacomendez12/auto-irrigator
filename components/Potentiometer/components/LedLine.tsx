@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     width: CONTAINER_SIZE,
     height: CONTAINER_SIZE,
-    backgroundColor: "white",
+    backgroundColor: "#ececec",
     borderRadius: RADIUS,
     flex: 1,
     flexDirection: "row",
