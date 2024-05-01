@@ -7,6 +7,8 @@ const MESSAGE_CHUNK_SIZE = 20;
 
 export function sendMessage(characteristic: Characteristic, message: String) {
     const bufferSize = message.length;
+    console.log(`buffer size = ${bufferSize}`);
+    
     const bufferSizeMessage = Buffer.from(String(bufferSize), "utf-8").toString(
       "base64"
     );
@@ -22,7 +24,7 @@ export function sendMessage(characteristic: Characteristic, message: String) {
           : bufferSize;
   
       const subMsg = message.substring(start, end);
-  
+      console.log(`send: ${subMsg}`);
       characteristic.writeWithoutResponse(
         Buffer.from(String(subMsg), "utf-8").toString("base64")
       );

@@ -73,7 +73,7 @@ export default function ManualIrrigation() {
 
       if (characteristic) {
         if (state.isOn) {
-          const message = createStartMessage(idx, state.irrigationTime);
+          const message = createStartMessage(idx, 10 || state.irrigationTime);
           sendMessage(characteristic, message);
         } else {
           const message = createStopMessage(idx);

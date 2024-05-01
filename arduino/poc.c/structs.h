@@ -1,14 +1,13 @@
 #ifndef __structs_h
 #define __structs_h
 
-#define DEVICE_START_PIN 2
 #define DEVICES_TOTAL 2
-#define LAST_DEVICE_PIN DEVICE_START_PIN + DEVICES_TOTAL - 1
 
 // States
 #define STOP_STATE 0
 #define MANUAL_START_STATE 1
 #define AUTO_START_STATE 2
+#define DEVICE_NOT_FOUND 100
 
 // Actions
 #define STOP 0
@@ -32,10 +31,10 @@ class DeviceIrrigation {
   public:
     byte state = STOP_STATE;
     byte deviceId = 0;
-    long endsAt = 0;
+    uint32_t endsAt = 0;
 
     DeviceIrrigation(byte deviceId) : deviceId(deviceId) {
-      
+      reset();
     }
   
     void reset() {
@@ -47,8 +46,8 @@ class DeviceIrrigation {
 struct Schedule {
   SchedulerType schedulerType;
   int ocurrences;
-  long startDate;
-  long endDate;
+  uint32_t startDate;
+  uint32_t endDate;
 };
 
 struct Task {

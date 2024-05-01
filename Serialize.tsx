@@ -20,9 +20,17 @@ function createMessage(
   payload: any | null
 ): string {
   const message = {
+    dummy: {
+      data: "hola",
+      other: "amiguito",
+      mas: "this is a very but veeeeery long text which could",
+      dos: "make the message payload very long and dificult to parse",
+      tres: "bla uno dos tres cuatro cinto seis siete"
+    },
     action: action,
     deviceId: deviceId,
-    payload: payload,
+    payload: payload
+
   };
 
   return JSON.stringify(message);

@@ -12,24 +12,22 @@ class PayloadBuilder {
   
   public:
 
-  static IBasePayload * fromJsonDocument(JsonDocument document) {
-     byte action = document["action"];
-
+  static IBasePayload * fromJsonDocument(JsonDocument &document, byte action) {
      if (action == STOP) {
        return NULL;
      } else if (action == MANUAL_START) {
-       int duration = document["payload"]["duration"];
+       int duration = int(document["payload"]["duration"]);
        return new StartPayload(duration);
      } else if (action == SET_DATE) {
-       long duration = document["payload"]["currentDate"];
+       uint32_t duration = document["payload"]["currentDate"];
        return new DatePayload(duration);
      } else if (action == ADD_TASK || action == DELETE_TASK || action == CHANGE_TASK) {
        byte id = document["payload"]["id"];
        byte deviceId = document["deviceId"];
        byte scheduleType = document["payload"]["schedule"]["type"];
        int scheduleOcurrences = document["payload"]["schedule"]["ocurrences"];
-       long scheduleStartDate = document["payload"]["schedule"]["startDate"]; 
-       long scheduleEndDate = document["payload"]["schedule"]["endDate"];
+       uint32_t scheduleStartDate = document["payload"]["schedule"]["startDate"]; 
+       uint32_t scheduleEndDate = document["payload"]["schedule"]["endDate"];
        return new ConfigPayload(id, deviceId, scheduleType, scheduleOcurrences, scheduleStartDate, scheduleEndDate);
      }
     

@@ -8,46 +8,46 @@ class StartPayload;
 class IBasePayload {
   
   public:
-  virtual int getDuration() {return 0;}
+  virtual uint32_t getDuration() {return 0;}
   virtual byte getId() {return 0;}
   virtual byte getDeviceId() {return 0;}
   virtual byte getScheduleType() {return 0;}
   virtual int getScheduleOcurrences() {return 0;}
-  virtual long getScheduleStartDate() {return 0;}
-  virtual long getScheduleEndDate() {return 0;}
-  virtual long getCurrentDate() { return 0; }
+  virtual uint32_t getScheduleStartDate() {return 0;}
+  virtual uint32_t getScheduleEndDate() {return 0;}
+  virtual uint32_t getCurrentDate() { return 0; }
 };
 
 class StartPayload : public IBasePayload {
   public:
 
-  StartPayload(int duration) : duration(duration) {}
+  StartPayload(uint32_t duration) : duration(duration) {}
   
-  int getDuration() {
+  uint32_t getDuration() {
     return this->duration;
   }
 
   private:
-  int duration;
+  uint32_t duration;
 };
 
 class DatePayload : public IBasePayload {
   public:
 
-  DatePayload(long currentDate) : currentDate(currentDate) {}
+  DatePayload(uint32_t currentDate) : currentDate(currentDate) {}
   
-  long getCurrentDate() {
+  uint32_t getCurrentDate() {
     return this->currentDate;
   }
 
   private:
-  long currentDate;
+  uint32_t currentDate;
 };
 
 class ConfigPayload : public IBasePayload {
   public:
 
-  ConfigPayload(int id, byte deviceId, byte scheduleType, int scheduleOcurrences, long scheduleStartDate, long scheduleEndDate) : 
+  ConfigPayload(int id, byte deviceId, byte scheduleType, int scheduleOcurrences, uint32_t scheduleStartDate, uint32_t scheduleEndDate) : 
     id(id),
     deviceId(deviceId),
     scheduleType(scheduleType),
@@ -60,16 +60,16 @@ class ConfigPayload : public IBasePayload {
   byte getDeviceId() { return deviceId;}
   byte getScheduleType() {return scheduleType;}
   int getScheduleOcurrences() {return scheduleOcurrences;}
-  long getScheduleStartDate() {return scheduleStartDate;}
-  long getScheduleEndDate() {return scheduleEndDate;}
+  uint32_t getScheduleStartDate() {return scheduleStartDate;}
+  uint32_t getScheduleEndDate() {return scheduleEndDate;}
 
   private:
   byte id;
   byte deviceId;
   byte scheduleType;
   int scheduleOcurrences;
-  long scheduleStartDate;
-  long scheduleEndDate;
+  uint32_t scheduleStartDate;
+  uint32_t scheduleEndDate;
 };
 
 

@@ -3,16 +3,15 @@
 #define __BTEVENT_H
 
 #include "PayloadBuilder.h"
-//#include "Payload.h"
 
 class BTEvent {
   public:
 
-  BTEvent(JsonDocument document) {
+  BTEvent(JsonDocument &document) {
     this->action = document["action"];
     this->deviceId = document["deviceId"];
     
-    payload = PayloadBuilder::fromJsonDocument(document);
+    payload = PayloadBuilder::fromJsonDocument(document, action);
   }
   
   ~BTEvent() {
