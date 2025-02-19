@@ -4,7 +4,7 @@ from asyncio import tasks
 from typing import Self, Union
 
 from numpy import number
-from scheduler import scheduler
+# from scheduler import scheduler
 from collections import OrderedDict
 from task_config import TaskConfig
 from task import Task
@@ -35,11 +35,11 @@ class TaskManager:
     def remove(self, task_id: int):
         del self.tasks[task_id]
 
-    def create_next_task(self) -> Task | None:
-        task_config, next_start_time = self.find_next_task_config()
-        if not task_config:
-            return None
-        return scheduler.create_next_task(task_config, next_start_time)
+    # def create_next_task(self) -> Task | None:
+    #     task_config, next_start_time = self.find_next_task_config()
+    #     if not task_config:
+    #         return None
+    #     return scheduler.create_next_task(task_config, next_start_time)
     
     def find_next_task_config(self) -> tuple[TaskConfig | None, int]:
         next_task = None
@@ -50,21 +50,23 @@ class TaskManager:
 
                 next_occurrence = config.get_next_occurrence(now)
 
-                if next_occurrence == None:
-                    return (None, 0)
-
-                if next_occurrence < lowest_time:
+                #if next_occurrence == None:
+                #    return (None, 0)
+                if next_occurrence and next_occurrence < lowest_time:
                     next_task = config
                     lowest_time = next_occurrence
 
         return (next_task, lowest_time)
     
     def is_task_enabled_and_in_period(self, now, config):
+        if not config.get_enabled():
+            return False
+        
         config_time = config.get_time()
         end = config.get_schedule().get_end_date()
         end_date = end + config_time + 1
 
-        return config.get_enabled() and now >= config.get_schedule().get_start_date() and now <= end_date
+        return now >= config.get_schedule().get_start_date() and now <= end_date
     
     def persist_tasks(self):
         pass

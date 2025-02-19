@@ -11,16 +11,17 @@ class Device(ABC):
     def __init__(self, device_id) -> None:
         self.device_id = device_id
         self.gpio = device_manager.map_gpio(device_id)
+        self.gpio_monitor = device_manager.map_gpio_monitor(device_id)
         self.name = device_manager.map_device_name(device_id)
         self.stop()
 
-    def start(self, timeout):
+    def start(self):
         self.state = self.DeviceState.STARTED
-        self._change_device_state(self.state)
+        self.__change_device_state()
 
     def stop(self):
         self.state = self.DeviceState.STOPPED
-        self._change_device_state(self.state)
+        self.__change_device_state()
 
     def get_device_id(self):
         return self.device_id
@@ -32,5 +33,5 @@ class Device(ABC):
         return self.state
     
     @abstractmethod
-    def _change_device_state(self, state: DeviceState):
+    def __change_device_state(self):
         """change device state"""

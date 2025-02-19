@@ -1,3 +1,4 @@
+from os import error
 from typing import Self
 from device.device import Device
 from enum import Enum
@@ -10,10 +11,13 @@ class Task:
     class TaskState(Enum):
         NEW = 0
         SCHEDULED = 1
-        STARTED = 2
+        RUNNING = 2
         STOPPED = 3
+        FINISHED = 4
 
     def __init__(self, id, config, device : Device, duration, start_time) -> None:
+        if not device:
+            raise Exception("Device could could not be None")
         self.id = id
         self.config = config
         self.device = device
@@ -25,18 +29,25 @@ class Task:
     def schedule_start(self):
         self.state = self.TaskState.SCHEDULED
 
-    def __start_task(self):
-        if self.device:
-            self.state = self.TaskState.STARTED
-            stop_at = time.time() + self.duration
-            self.device.start(stop_at)
-        else:
-            print(f"Task with ID: {self.id} doesn't have a device assigned. it can't be started")
+    def finish(self):
+        self.device.stop()
+        self.state = self.TaskState.FINISHED
+
+    def stop(self):
+        self.device.stop()
+        self.state = self.TaskState.STOPPED
+
+    def start(self):
+        self.device.start()
+        self.state = self.TaskState.RUNNING
 
     def get_id(self):
         return self.id
     
     def get_start_time(self):
+        return self.start_time
+    
+    def get_end_time(self):
         return self.start_time
 
     def to_raw(self):

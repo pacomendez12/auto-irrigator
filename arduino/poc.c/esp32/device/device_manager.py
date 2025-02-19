@@ -5,8 +5,8 @@ from valve import Valve
 
 
 devices = [
-    {"device_id": 1, "gpio": 1, "name": "device 1", "type": "relayBaseInterruptor"},
-    {"device_id": 2, "gpio": 2, "name": "device 2", "type": "valve"}
+    {"device_id": 1, "gpio": 1, "gpio_monitor": 3, "name": "device 1", "type": "relayBaseInterruptor"},
+    {"device_id": 2, "gpio": 2, "gpio_monitor": 4, "name": "device 2", "type": "valve"}
 ]
 
 DEVICE_RELAY_BASE_INTERRUPTOR = "relayBaseInterruptor".upper()
@@ -20,6 +20,9 @@ class DeviceManager:
 
     def map_gpio(self, device_id: int):
         return self.__get_property(device_id, "gpio")
+    
+    def map_gpio_monitor(self, device_id: int):
+        return self.__get_property(device_id, "gpio_monitor")
     
     def map_device_name(self, device_id: int):
         return self.__get_property(device_id, "name")

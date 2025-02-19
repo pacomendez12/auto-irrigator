@@ -1,7 +1,5 @@
 from command import Command
 
-
-
 # data format: |action|
 class Start(Command):
     
