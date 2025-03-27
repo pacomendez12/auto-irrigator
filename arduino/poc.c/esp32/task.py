@@ -2,7 +2,6 @@ from os import error
 from typing import Self
 from device.device import Device
 from enum import Enum
-import time
 
 class Task:
 
@@ -23,22 +22,25 @@ class Task:
         self.device = device
         self.duration = duration
         self.start_time = start_time
-        self.end_time = start_time + duration
+        self.end_time = start_time + (duration * 60)
         self.state = self.TaskState.NEW
 
     def schedule_start(self):
         self.state = self.TaskState.SCHEDULED
 
     def finish(self):
-        self.device.stop()
+        if self.device:
+            self.device.stop()
         self.state = self.TaskState.FINISHED
 
     def stop(self):
-        self.device.stop()
+        if self.device:
+            self.device.stop()
         self.state = self.TaskState.STOPPED
 
     def start(self):
-        self.device.start()
+        if self.device:
+            self.device.start()
         self.state = self.TaskState.RUNNING
 
     def get_id(self):
@@ -48,7 +50,7 @@ class Task:
         return self.start_time
     
     def get_end_time(self):
-        return self.start_time
+        return self.end_time
 
     def to_raw(self):
         pass

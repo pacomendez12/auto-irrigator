@@ -1,18 +1,20 @@
-from device import Device
-from machine import Pin
+from device.device import Device
 
 class RelayBaseInterruptor(Device):
     def __init__(self, device_id) -> None:
         super().__init__(device_id)
-        self.gpio_pin = Pin(self.gpio, mode=Pin.OUT)
-        self.gpio_monitor_pin = Pin(self.gpio, mode=Pin.OUT) if self.gpio_monitor else None
+        print("creating relayBaseInterruptor")
 
-    def __change_device_state(self):
+    def change_device_state(self):
         if self.state == Device.DeviceState.STARTED:
             self.gpio_pin.on()
+            print(f'starging valve in gpio {self.gpio}')
             if self.gpio_monitor_pin:
+                print(f'starging monitor for valve in gpio {self.gpio_monitor}')
                 self.gpio_monitor_pin.on();
         elif self.state == Device.DeviceState.STOPPED:
             self.gpio_pin.off()
+            print(f'stopping valve in gpio {self.gpio}')
             if self.gpio_monitor_pin:
+                print(f'stopping monitor for valve in gpio {self.gpio_monitor}')
                 self.gpio_monitor_pin.off();

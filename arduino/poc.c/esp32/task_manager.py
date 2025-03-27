@@ -1,14 +1,7 @@
 import sys
-import time as time
-from asyncio import tasks
-from typing import Self, Union
+from typing import Type
 
-from numpy import number
-# from scheduler import scheduler
-from collections import OrderedDict
-from task_config import TaskConfig
-from task import Task
-from device.device_manager import device_manager
+from task_config import Schedule, TaskConfig, OneTimeTaskConfig
 
 
 #   {
@@ -24,50 +17,62 @@ from device.device_manager import device_manager
 #     enabled: true,
 #   },
 
+BASE = 0x1
+NONE = 0x0
+SUNDAY = BASE << 0
+MONDAY = BASE << 1
+TUESDAY = BASE << 2
+WENDNESDAY = BASE << 3
+THURSDAY = BASE << 4
+FRIDAY = BASE << 5
+SATURDAY = BASE << 6
+
+ONE_TIME_EVENT = 0x0
+REPEAT_WEEK = 0x1
+REPEAT_BIWEEK = 0x2
+REPEAT_MONTH = 0x3
+
+mockTasks = {
+    1:
+    OneTimeTaskConfig(0,
+                      1,
+                      83280,
+                      1,
+                      True,
+                      Schedule(ONE_TIME_EVENT, SUNDAY | MONDAY | TUESDAY | WENDNESDAY |
+                               THURSDAY | FRIDAY | SATURDAY, 1740290400, 1740420000)
+                      )
+
+}
+
 
 class TaskManager:
-    def __init__(self) -> None:
-        self.tasks : dict[int, TaskConfig] = {}
+    def __init__(self, tasks) -> None:
+        self.tasks: dict[int, TaskConfig] = {}
+        for key, value in tasks.items():
+            self.add(key, value)
 
-    def add(self, taskConfig: TaskConfig):
-        self.tasks[taskConfig.get_id()] = taskConfig
+    def add(self, id: int, taskConfig: Type[TaskConfig]):
+        self.tasks[id] = taskConfig
 
     def remove(self, task_id: int):
         del self.tasks[task_id]
+        
+    def clear(self):
+        self.tasks.clear()
 
-    # def create_next_task(self) -> Task | None:
-    #     task_config, next_start_time = self.find_next_task_config()
-    #     if not task_config:
-    #         return None
-    #     return scheduler.create_next_task(task_config, next_start_time)
-    
-    def find_next_task_config(self) -> tuple[TaskConfig | None, int]:
+    def find_next_task_config(self, now: float) -> tuple[TaskConfig | None, float]:
         next_task = None
         lowest_time = sys.maxsize
-        now = time.time()
         for config in self.tasks.values():
-            if self.is_task_enabled_and_in_period(now, config):
+            next_occurrence = config.get_next_occurrence(now)
 
-                next_occurrence = config.get_next_occurrence(now)
-
-                #if next_occurrence == None:
-                #    return (None, 0)
-                if next_occurrence and next_occurrence < lowest_time:
-                    next_task = config
-                    lowest_time = next_occurrence
+            if next_occurrence and next_occurrence < lowest_time:
+                next_task = config
+                lowest_time = next_occurrence
 
         return (next_task, lowest_time)
-    
-    def is_task_enabled_and_in_period(self, now, config):
-        if not config.get_enabled():
-            return False
-        
-        config_time = config.get_time()
-        end = config.get_schedule().get_end_date()
-        end_date = end + config_time + 1
 
-        return now >= config.get_schedule().get_start_date() and now <= end_date
-    
     def persist_tasks(self):
         pass
 
@@ -77,4 +82,5 @@ class TaskManager:
     def find_task(self, task_id):
         return self.tasks[task_id]
 
-task_manager = TaskManager()
+
+task_manager = TaskManager(mockTasks)

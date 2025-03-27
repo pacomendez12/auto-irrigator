@@ -33,4 +33,4 @@ class ConfigurationPayload:
         return self._schedule_end_date
         
 
-class ManualPayload:
+#class ManualPayload:

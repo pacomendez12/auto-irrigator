@@ -1,10 +1,21 @@
+from scheduler import scheduler
+import time as time
+import datetime
 
-
-class Main_app:
+class Main:
 
     def __init__(self) -> None:
-        pass
+        print("starting app")
 
-    def run():
+    def run(self):
         while True:
-            pass
+            t = time.time() #1740370740
+            # print(t)
+            mytimestamp = datetime.datetime.fromtimestamp(t)
+            # print("Converted Datetime:", mytimestamp)
+            scheduler.tick(t)
+            time.sleep(1)
+            
+
+app = Main()
+app.run()
