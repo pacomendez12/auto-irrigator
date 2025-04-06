@@ -19,6 +19,7 @@ class Device(ABC):
         self.stop()
 
     def start(self):
+        print(f"START from device {self.device_id}")
         self.state = self.DeviceState.STARTED
         self.change_device_state()
 

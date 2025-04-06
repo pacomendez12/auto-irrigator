@@ -11,7 +11,6 @@ class Main:
         while True:
             t = time.time() #1740370740
             # print(t)
-            mytimestamp = datetime.datetime.fromtimestamp(t)
             # print("Converted Datetime:", mytimestamp)
             scheduler.tick(t)
             time.sleep(1)

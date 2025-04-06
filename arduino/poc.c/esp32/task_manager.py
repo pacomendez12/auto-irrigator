@@ -19,13 +19,13 @@ from task_config import Schedule, TaskConfig, OneTimeTaskConfig
 
 BASE = 0x1
 NONE = 0x0
-SUNDAY = BASE << 0
-MONDAY = BASE << 1
-TUESDAY = BASE << 2
-WENDNESDAY = BASE << 3
-THURSDAY = BASE << 4
-FRIDAY = BASE << 5
-SATURDAY = BASE << 6
+MONDAY = BASE << 0
+TUESDAY = BASE << 1
+WENDNESDAY = BASE << 2
+THURSDAY = BASE << 3
+FRIDAY = BASE << 4
+SATURDAY = BASE << 5
+SUNDAY = BASE << 6
 
 ONE_TIME_EVENT = 0x0
 REPEAT_WEEK = 0x1

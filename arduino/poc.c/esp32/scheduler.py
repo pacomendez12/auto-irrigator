@@ -10,6 +10,9 @@ class Scheduler:
     MAX_TASKS = 3
     
     def __init__(self) -> None:
+        self.restart()
+        
+    def restart(self) -> None:
         self.tasks: List[Task] = []
         self.running_task : Task | None = None
 
